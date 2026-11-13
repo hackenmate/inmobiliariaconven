@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
+  --color-alabaster: #FAF9F6;
+  --color-stone-soft: #F1EFEA;
+  --color-forest-ink: #18241E;
+  --color-sage-deep: #2A4736;
+  --color-cedar: #8C6239;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    background-color: #FAF9F6;
+    color: #18241E;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, .font-editorial {
+    font-family: var(--font-serif);
+    text-wrap: balance;
+  }
+}
+
+@keyframes kenBurnsSlow {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.06);
+  }
+}
+
+.animate-ken-burns {
+  animation: kenBurnsSlow 9s cubic-bezier(0.22, 1, 0.36, 1) infinite alternate;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 50s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-ken-burns,
+  .animate-marquee {
+    animation: none;
+  }
+}
