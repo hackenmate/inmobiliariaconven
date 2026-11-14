@@ -4,6 +4,7 @@ import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
+import { saveLeadToFirestore } from './server/firebaseAdmin.ts';
 import { registerFaqGeminiRoutes } from './server/faqGemini.ts';
 
 dotenv.config();
@@ -262,7 +263,7 @@ async function startServer() {
       interest?: unknown;
     };
 
-    const intent = body.intent === 'sell' ? 'sell' : 'buy';
+    const intent: 'buy' | 'sell' = body.intent === 'sell' ? 'sell' : 'buy';
     const fullName = typeof body.fullName === 'string' ? body.fullName.trim() : '';
     const email = typeof body.email === 'string' ? body.email.trim() : '';
     const phone = typeof body.phone === 'string' ? body.phone.trim() : '';
@@ -299,6 +300,12 @@ async function startServer() {
     };
 
     try {
+      await saveLeadToFirestore(record);
+    } catch {
+      // Fallback to local disk record below
+    }
+
+    try {
       let existing: unknown[] = [];
       try {
         const raw = await fs.readFile(LEADS_FILE, 'utf-8');
@@ -320,6 +327,21 @@ async function startServer() {
     });
   });
 
+  app.use(
+    '/assets/media',
+    express.static(path.resolve(__dirname, 'public_web/assets/media'), {
+      maxAge: '7d',
+      etag: true,
+    }),
+  );
+  app.use(
+    '/assets/videos',
+    express.static(path.resolve(__dirname, 'public_web/assets/videos'), {
+      maxAge: '7d',
+      etag: true,
+    }),
+  );
+
   if (process.env.NODE_ENV !== 'production') {
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
@@ -333,7 +355,16 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distDir = path.resolve(__dirname, 'dist');
-    app.use(express.static(distDir));
+    app.use(
+      express.static(distDir, {
+        maxAge: '7d',
+        setHeaders: (res, filePath) => {
+          if (filePath.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'no-cache');
+          }
+        },
+      }),
+    );
     app.get('*', (req, res, next) => {
       if (req.path.startsWith('/api/')) {
         next();

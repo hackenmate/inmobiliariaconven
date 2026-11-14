@@ -10,6 +10,7 @@
   --color-sage-deep: #1B4730;
   --color-cedar: #9A783A;
   --color-gold: #C8A562;
+  --color-gold-bright: #E6CC8F;
   --color-slate: #2D3332;
 }
 
@@ -29,6 +30,14 @@
   .font-brand {
     font-family: var(--font-brand);
   }
+}
+
+.terrantier-gold-gradient {
+  background: linear-gradient(135deg, #E8CF96 0%, #C8A562 52%, #A6823E 100%);
+}
+
+.terrantier-gold-gradient:hover {
+  background: linear-gradient(135deg, #F0DBA8 0%, #D4B26E 52%, #B58F48 100%);
 }
 
 @keyframes kenBurnsSlow {
@@ -54,7 +63,7 @@
 }
 
 .animate-marquee {
-  animation: marquee 50s linear infinite;
+  animation: marquee 48s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
-import type {
-  AgentProfile,
-  CurrencyCode,
-  HeroSearchFilters,
-  PropertyItem,
-  ZoneId,
+import {
+  HUAYOPATA_REEL_PHOTOS,
+  PROPERTIES,
+  VALLEY_ZONES,
+  type AgentProfile,
+  type CurrencyCode,
+  type FilmReelPhoto,
+  type HeroSearchFilters,
+  type PropertyItem,
+  type ValleyZone,
+  type ZoneId,
 } from './data/valleyData';
 import type { LanguageCode } from './i18n/translations';
 import { fetchExchangeRate } from './services/api';
+import { fetchVisualCatalogFromFirestore } from './services/visualCatalog';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { PropertiesSection } from './components/PropertiesSection';
@@ -29,6 +35,9 @@ const DEFAULT_FILTERS: HeroSearchFilters = {
 export default function App() {
   const [language, setLanguage] = useState<LanguageCode>('es');
   const [filters, setFilters] = useState<HeroSearchFilters>(DEFAULT_FILTERS);
+  const [reelPhotos, setReelPhotos] = useState<FilmReelPhoto[]>(HUAYOPATA_REEL_PHOTOS);
+  const [catalogProperties, setCatalogProperties] = useState<PropertyItem[]>(PROPERTIES);
+  const [catalogZones, setCatalogZones] = useState<ValleyZone[]>(VALLEY_ZONES);
   const [preselectedProperty, setPreselectedProperty] = useState<PropertyItem | null>(null);
   const [preselectedAgent, setPreselectedAgent] = useState<AgentProfile | null>(null);
   const [currency, setCurrency] = useState<CurrencyCode>('USD');
@@ -45,6 +54,24 @@ export default function App() {
     window.addEventListener('gmp-quota-exceeded', handleQuotaExceeded);
     return () => {
       window.removeEventListener('gmp-quota-exceeded', handleQuotaExceeded);
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchVisualCatalogFromFirestore()
+      .then((catalog) => {
+        if (cancelled || !catalog.fromFirestore) return;
+        setReelPhotos(catalog.reelPhotos);
+        setCatalogProperties(catalog.properties);
+        setCatalogZones(catalog.zones);
+      })
+      .catch(() => {
+        // Keep instant preloaded WebP visual catalog
+      });
+
+    return () => {
+      cancelled = true;
     };
   }, []);
 
@@ -115,10 +142,11 @@ export default function App() {
       <main>
         <HeroSection language={language} filters={filters} onApplyFilters={setFilters} />
 
-        <FilmReelGallery language={language} />
+        <FilmReelGallery language={language} photos={reelPhotos} />
 
         <PropertiesSection
           language={language}
+          properties={catalogProperties}
           filters={filters}
           currency={currency}
           penRate={penRate}
@@ -131,7 +159,11 @@ export default function App() {
           onSelectPropertyForLead={handleSelectPropertyForLead}
         />
 
-        <ZonesSection language={language} onFilterByZone={handleFilterByZone} />
+        <ZonesSection
+          language={language}
+          zones={catalogZones}
+          onFilterByZone={handleFilterByZone}
+        />
 
         <ManifestoSection language={language} />
 

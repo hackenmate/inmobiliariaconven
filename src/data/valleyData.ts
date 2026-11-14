@@ -1,16 +1,3 @@
-import huayopata03Loma from '../assets/huayopata/huayopata_03_loma.jpg';
-import huayopata05Trocha from '../assets/huayopata/huayopata_05_trocha.jpg';
-import huayopata06Bosque from '../assets/huayopata/huayopata_06_bosque.jpg';
-import huayopata07Panoramica from '../assets/huayopata/huayopata_07_panoramica.jpg';
-import huayopata08Pueblo from '../assets/huayopata/huayopata_08_pueblo.jpg';
-import huayopata09Cordillera from '../assets/huayopata/huayopata_09_cordillera.jpg';
-import huayopata13Campo from '../assets/huayopata/huayopata_13_campo.jpg';
-
-import villaSelvaAltaImg from '../assets/images/villa_selva_alta_1794594171747.jpg';
-import santaTeresaCanyonImg from '../assets/images/santa_teresa_canyon_1794594172097.jpg';
-import echaratiCacaoFincaImg from '../assets/images/echarati_cacao_finca_1794594171694.jpg';
-import maranuraValleyEstateImg from '../assets/images/maranura_valley_estate_1794594173233.jpg';
-
 export type ZoneId =
   | 'Huayopata'
   | 'Quillabamba'
@@ -55,7 +42,9 @@ export interface ValleyZone {
   description: string;
   highlights: string[];
   image: string;
+  thumb?: string;
   video: string;
+  poster?: string;
   videoScaleOrigin: string;
   driveTime: string;
   coordinates: { lat: number; lng: number };
@@ -80,6 +69,7 @@ export interface PropertyItem {
   features: string[];
   productivityOrArchitecture: string;
   images: string[];
+  thumbImages?: string[];
   coordinates: { lat: number; lng: number };
 }
 
@@ -105,7 +95,42 @@ export interface AgentProfile {
   bio: string;
   specialties: string[];
   photo?: string;
+  photoThumb?: string;
 }
+
+const BASE_URL = import.meta.env.BASE_URL;
+const mediaUrl = (slug: string, variant: 'thumb' | 'full') =>
+  `${BASE_URL}assets/media/${slug}-${variant}.webp`;
+
+export const HUAYOPATA_AERIAL_VIDEO = `${BASE_URL}assets/videos/huayopata_hero.mp4`;
+export const HUAYOPATA_VALLEY_VIDEO = `${BASE_URL}assets/videos/huayopata_valle.mp4`;
+export const HERO_VIDEO_POSTER = `${BASE_URL}assets/media/huayopata_hero-poster.webp`;
+export const VALLEY_VIDEO_POSTER = `${BASE_URL}assets/media/huayopata_valle-poster.webp`;
+
+export const MEDIA_ASSETS = {
+  huayopataAerial: mediaUrl('huayopata-07-panoramica', 'full'),
+  huayopataAerialThumb: mediaUrl('huayopata-07-panoramica', 'thumb'),
+  huayopataLoma: mediaUrl('huayopata-03-loma', 'full'),
+  huayopataLomaThumb: mediaUrl('huayopata-03-loma', 'thumb'),
+  huayopataTrocha: mediaUrl('huayopata-05-trocha', 'full'),
+  huayopataTrochaThumb: mediaUrl('huayopata-05-trocha', 'thumb'),
+  huayopataBosque: mediaUrl('huayopata-06-bosque', 'full'),
+  huayopataBosqueThumb: mediaUrl('huayopata-06-bosque', 'thumb'),
+  huayopataPueblo: mediaUrl('huayopata-08-pueblo', 'full'),
+  huayopataPuebloThumb: mediaUrl('huayopata-08-pueblo', 'thumb'),
+  huayopataCordillera: mediaUrl('huayopata-09-cordillera', 'full'),
+  huayopataCordilleraThumb: mediaUrl('huayopata-09-cordillera', 'thumb'),
+  huayopataCampo: mediaUrl('huayopata-13-campo', 'full'),
+  huayopataCampoThumb: mediaUrl('huayopata-13-campo', 'thumb'),
+  quillabambaVilla: mediaUrl('quillabamba-villa', 'full'),
+  quillabambaVillaThumb: mediaUrl('quillabamba-villa', 'thumb'),
+  santaTeresaCanyon: mediaUrl('santa-teresa-canyon', 'full'),
+  santaTeresaCanyonThumb: mediaUrl('santa-teresa-canyon', 'thumb'),
+  echaratiCacao: mediaUrl('echarati-cacao', 'full'),
+  echaratiCacaoThumb: mediaUrl('echarati-cacao', 'thumb'),
+  maranuraEstate: mediaUrl('maranura-estate', 'full'),
+  maranuraEstateThumb: mediaUrl('maranura-estate', 'thumb'),
+};
 
 export const AGENTS: AgentProfile[] = [
   {
@@ -123,7 +148,8 @@ export const AGENTS: AgentProfile[] = [
       'Tomas aéreas con dron y revisión de linderos',
       'Verificación de accesos y fuentes de agua',
     ],
-    photo: huayopata13Campo,
+    photo: MEDIA_ASSETS.huayopataCampo,
+    photoThumb: MEDIA_ASSETS.huayopataCampoThumb,
   },
   {
     id: 'jose',
@@ -143,12 +169,10 @@ export const AGENTS: AgentProfile[] = [
   },
 ];
 
-export const HUAYOPATA_AERIAL_VIDEO = '/assets/videos/huayopata_hero.mp4';
-export const HUAYOPATA_VALLEY_VIDEO = '/assets/videos/huayopata_valle.mp4';
-
 export interface FilmReelPhoto {
   id: string;
   src: string;
+  thumb?: string;
   title: string;
   caption: string;
 }
@@ -156,61 +180,54 @@ export interface FilmReelPhoto {
 export const HUAYOPATA_REEL_PHOTOS: FilmReelPhoto[] = [
   {
     id: 'reel-07',
-    src: huayopata07Panoramica,
+    src: MEDIA_ASSETS.huayopataAerial,
+    thumb: MEDIA_ASSETS.huayopataAerialThumb,
     title: 'Ladera forestal y acceso · Huayopata',
     caption: '1,780 m s. n. m. · Vista aérea del sector',
   },
   {
     id: 'reel-03',
-    src: huayopata03Loma,
+    src: MEDIA_ASSETS.huayopataLoma,
+    thumb: MEDIA_ASSETS.huayopataLomaThumb,
     title: 'Bosque de pinos y cabaña · Huayopata',
     caption: 'Arboleda madura con ingreso vehicular',
   },
   {
     id: 'reel-05',
-    src: huayopata05Trocha,
+    src: MEDIA_ASSETS.huayopataTrocha,
+    thumb: MEDIA_ASSETS.huayopataTrochaThumb,
     title: 'Camino afirmado hacia la cumbre',
     caption: 'Acceso directo a terrazas de cultivo',
   },
   {
     id: 'reel-06',
-    src: huayopata06Bosque,
+    src: MEDIA_ASSETS.huayopataBosque,
+    thumb: MEDIA_ASSETS.huayopataBosqueThumb,
     title: 'Reserva de bosque y quebrada',
     caption: 'Agua de manantial durante todo el año',
   },
   {
     id: 'reel-08',
-    src: huayopata08Pueblo,
+    src: MEDIA_ASSETS.huayopataPueblo,
+    thumb: MEDIA_ASSETS.huayopataPuebloThumb,
     title: 'Centro poblado de Huayopata',
     caption: 'Panorámica hacia el valle principal',
   },
   {
     id: 'reel-09',
-    src: huayopata09Cordillera,
+    src: MEDIA_ASSETS.huayopataCordillera,
+    thumb: MEDIA_ASSETS.huayopataCordilleraThumb,
     title: 'Cordillera y selva alta',
     caption: 'Laderas verdes en La Convención',
   },
   {
     id: 'reel-13',
-    src: huayopata13Campo,
+    src: MEDIA_ASSETS.huayopataCampo,
+    thumb: MEDIA_ASSETS.huayopataCampoThumb,
     title: 'Recorrido de verificación en campo',
     caption: 'Revisión directa de linderos con dron',
   },
 ];
-
-export const MEDIA_ASSETS = {
-  huayopataAerial: huayopata07Panoramica,
-  huayopataLoma: huayopata03Loma,
-  huayopataTrocha: huayopata05Trocha,
-  huayopataBosque: huayopata06Bosque,
-  huayopataPueblo: huayopata08Pueblo,
-  huayopataCordillera: huayopata09Cordillera,
-  huayopataCampo: huayopata13Campo,
-  quillabambaVilla: villaSelvaAltaImg,
-  santaTeresaCanyon: santaTeresaCanyonImg,
-  echaratiCacao: echaratiCacaoFincaImg,
-  maranuraEstate: maranuraValleyEstateImg,
-};
 
 export const VALLEY_ZONES: ValleyZone[] = [
   {
@@ -224,7 +241,9 @@ export const VALLEY_ZONES: ValleyZone[] = [
       'Entrada verde a La Convención bajando desde el Abra Málaga. Sus tierras húmedas y manantiales propios la hacen ideal para café de altura, té y casas de campo tranquilas.',
     highlights: ['Café de altura y té', 'Manantiales todo el año', 'A 3h 15m de Cusco'],
     image: MEDIA_ASSETS.huayopataAerial,
+    thumb: MEDIA_ASSETS.huayopataAerialThumb,
     video: HUAYOPATA_AERIAL_VIDEO,
+    poster: HERO_VIDEO_POSTER,
     videoScaleOrigin: 'origin-center',
     driveTime: '35 min a Quillabamba',
     coordinates: { lat: -12.976, lng: -72.567 },
@@ -240,7 +259,9 @@ export const VALLEY_ZONES: ValleyZone[] = [
       'Capital comercial de La Convención con clima cálido alrededor de 24 °C. Reúne casas familiares amplias, todos los servicios urbanos y títulos independientes.',
     highlights: ['Clima cálido de 24 °C', 'Partidas urbanas independientes', 'Todos los servicios'],
     image: MEDIA_ASSETS.quillabambaVilla,
+    thumb: MEDIA_ASSETS.quillabambaVillaThumb,
     video: HUAYOPATA_VALLEY_VIDEO,
+    poster: VALLEY_VIDEO_POSTER,
     videoScaleOrigin: 'origin-top-left',
     driveTime: 'Capital provincial',
     coordinates: { lat: -12.867, lng: -72.693 },
@@ -256,7 +277,9 @@ export const VALLEY_ZONES: ValleyZone[] = [
       'Corredor natural hacia Machu Picchu con movimiento turístico constante. Sus terrenos con quebradas de agua y cercanía a las termas de Cocalmayo funcionan muy bien para hospedajes rurales.',
     highlights: ['Ruta hacia Machu Picchu', 'Cerca de baños termales', 'Aptos para hospedaje'],
     image: MEDIA_ASSETS.santaTeresaCanyon,
+    thumb: MEDIA_ASSETS.santaTeresaCanyonThumb,
     video: HUAYOPATA_AERIAL_VIDEO,
+    poster: HERO_VIDEO_POSTER,
     videoScaleOrigin: 'origin-bottom-right',
     driveTime: '55 min de Quillabamba',
     coordinates: { lat: -13.124, lng: -72.593 },
@@ -272,7 +295,9 @@ export const VALLEY_ZONES: ValleyZone[] = [
       'Zona tradicional de cacao Chuncho y frutales. Recomendada para quienes buscan fundos amplios con río cercano y buen suelo agrícola.',
     highlights: ['Cacao Chuncho nativo', 'Fundos de 20 a 150 Ha', 'Ríos y quebradas limpias'],
     image: MEDIA_ASSETS.echaratiCacao,
+    thumb: MEDIA_ASSETS.echaratiCacaoThumb,
     video: HUAYOPATA_VALLEY_VIDEO,
+    poster: VALLEY_VIDEO_POSTER,
     videoScaleOrigin: 'origin-top-right',
     driveTime: '25 min de Quillabamba',
     coordinates: { lat: -12.768, lng: -72.581 },
@@ -288,7 +313,9 @@ export const VALLEY_ZONES: ValleyZone[] = [
       'Buena combinación entre carretera asfaltada y tranquilidad rural. Sus laderas soleadas producen cítricos, palto y café, y cuentan con espacios listos para construir.',
     highlights: ['Acceso por carretera PE-28B', 'Buen sol todo el año', 'Listo para construir'],
     image: MEDIA_ASSETS.maranuraEstate,
+    thumb: MEDIA_ASSETS.maranuraEstateThumb,
     video: HUAYOPATA_AERIAL_VIDEO,
+    poster: HERO_VIDEO_POSTER,
     videoScaleOrigin: 'origin-bottom-left',
     driveTime: '18 min de Quillabamba',
     coordinates: { lat: -12.957, lng: -72.663 },
@@ -325,6 +352,13 @@ export const PROPERTIES: PropertyItem[] = [
       MEDIA_ASSETS.huayopataBosque,
       MEDIA_ASSETS.huayopataCordillera,
     ],
+    thumbImages: [
+      MEDIA_ASSETS.huayopataAerialThumb,
+      MEDIA_ASSETS.huayopataLomaThumb,
+      MEDIA_ASSETS.huayopataTrochaThumb,
+      MEDIA_ASSETS.huayopataBosqueThumb,
+      MEDIA_ASSETS.huayopataCordilleraThumb,
+    ],
     coordinates: { lat: -12.982, lng: -72.556 },
   },
   {
@@ -352,6 +386,7 @@ export const PROPERTIES: PropertyItem[] = [
     ],
     productivityOrArchitecture: 'Residencia lista para habitar',
     images: [MEDIA_ASSETS.quillabambaVilla],
+    thumbImages: [MEDIA_ASSETS.quillabambaVillaThumb],
     coordinates: { lat: -12.861, lng: -72.698 },
   },
   {
@@ -381,6 +416,11 @@ export const PROPERTIES: PropertyItem[] = [
       MEDIA_ASSETS.huayopataPueblo,
       MEDIA_ASSETS.huayopataCordillera,
     ],
+    thumbImages: [
+      MEDIA_ASSETS.huayopataTrochaThumb,
+      MEDIA_ASSETS.huayopataPuebloThumb,
+      MEDIA_ASSETS.huayopataCordilleraThumb,
+    ],
     coordinates: { lat: -12.968, lng: -72.579 },
   },
   {
@@ -406,6 +446,7 @@ export const PROPERTIES: PropertyItem[] = [
     ],
     productivityOrArchitecture: 'Uso turístico o retiro en naturaleza',
     images: [MEDIA_ASSETS.santaTeresaCanyon],
+    thumbImages: [MEDIA_ASSETS.santaTeresaCanyonThumb],
     coordinates: { lat: -13.118, lng: -72.596 },
   },
   {
@@ -433,6 +474,7 @@ export const PROPERTIES: PropertyItem[] = [
     ],
     productivityOrArchitecture: 'Casa de campo · 18 min de Quillabamba',
     images: [MEDIA_ASSETS.maranuraEstate],
+    thumbImages: [MEDIA_ASSETS.maranuraEstateThumb],
     coordinates: { lat: -12.954, lng: -72.668 },
   },
   {
@@ -458,6 +500,7 @@ export const PROPERTIES: PropertyItem[] = [
     ],
     productivityOrArchitecture: 'Fundo cacaotero en producción',
     images: [MEDIA_ASSETS.echaratiCacao],
+    thumbImages: [MEDIA_ASSETS.echaratiCacaoThumb],
     coordinates: { lat: -12.764, lng: -72.575 },
   },
 ];

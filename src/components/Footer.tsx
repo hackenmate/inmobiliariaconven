@@ -1,7 +1,7 @@
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { AGENTS, type ZoneId } from '../data/valleyData';
 import { UI_COPY, type LanguageCode } from '../i18n/translations';
-import { TerrantierLogo, TerrantierPatternOverlay } from './BrandLogo';
+import { TerrantierGoldRule, TerrantierLogo, TerrantierPatternOverlay } from './BrandLogo';
 
 interface FooterProps {
   language: LanguageCode;
@@ -15,10 +15,11 @@ export function Footer({ language, onSelectZone }: FooterProps) {
   const copy = UI_COPY[language].footer;
 
   return (
-    <footer className="relative overflow-hidden bg-[#0E2F1E] text-[#FAF8F3] pt-16 pb-12 px-6 md:px-10 border-t border-[#C8A562]/30">
+    <footer className="relative overflow-hidden bg-[#0E2F1E] text-[#FAF8F3]">
+      <TerrantierGoldRule />
       <TerrantierPatternOverlay opacityClass="opacity-[0.04]" />
 
-      <div className="relative z-10 max-w-7xl mx-auto">
+      <div className="relative z-10 max-w-7xl mx-auto pt-16 pb-12 px-6 md:px-10">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-[#C8A562]/20">
           <div className="md:col-span-4 space-y-5">
             <a

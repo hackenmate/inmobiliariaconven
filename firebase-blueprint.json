@@ -1,0 +1,373 @@
+{
+  "entities": {
+    "MediaAsset": {
+      "title": "MediaAsset",
+      "description": "Optimized visual asset metadata for Terrantier Inmobiliaria galleries, hero, and property cards.",
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string",
+          "description": "Unique semantic slug for the visual asset.",
+          "pattern": "^[a-z0-9-]+$",
+          "minLength": 2,
+          "maxLength": 96
+        },
+        "section": {
+          "type": "string",
+          "description": "Section of the site where the asset is primarily displayed.",
+          "enum": ["hero", "reel", "property", "zone", "team", "manifesto"]
+        },
+        "titleEs": {
+          "type": "string",
+          "description": "Spanish display title.",
+          "minLength": 2,
+          "maxLength": 140
+        },
+        "titleEn": {
+          "type": "string",
+          "description": "English display title.",
+          "minLength": 2,
+          "maxLength": 140
+        },
+        "captionEs": {
+          "type": "string",
+          "description": "Spanish descriptive caption.",
+          "maxLength": 220
+        },
+        "captionEn": {
+          "type": "string",
+          "description": "English descriptive caption.",
+          "maxLength": 220
+        },
+        "thumbUrl": {
+          "type": "string",
+          "description": "Relative or CDN path to the compressed WebP thumbnail variant.",
+          "minLength": 3,
+          "maxLength": 320
+        },
+        "fullUrl": {
+          "type": "string",
+          "description": "Relative or CDN path to the full-resolution WebP variant.",
+          "minLength": 3,
+          "maxLength": 320
+        },
+        "videoUrl": {
+          "type": "string",
+          "description": "Optional faststart MP4 video path.",
+          "maxLength": 320
+        },
+        "posterUrl": {
+          "type": "string",
+          "description": "Optional WebP video poster frame path.",
+          "maxLength": 320
+        },
+        "width": {
+          "type": "number",
+          "description": "Intrinsic pixel width for zero-CLS layout reservation."
+        },
+        "height": {
+          "type": "number",
+          "description": "Intrinsic pixel height for zero-CLS layout reservation."
+        },
+        "sizeKb": {
+          "type": "number",
+          "description": "Compressed asset payload size in kilobytes."
+        },
+        "sortOrder": {
+          "type": "number",
+          "description": "Deterministic display order."
+        },
+        "published": {
+          "type": "boolean",
+          "description": "Whether the visual asset is active on the public site."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server last update timestamp."
+        }
+      },
+      "required": [
+        "slug",
+        "section",
+        "titleEs",
+        "titleEn",
+        "thumbUrl",
+        "fullUrl",
+        "sortOrder",
+        "published",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "PropertyListing": {
+      "title": "PropertyListing",
+      "description": "Real-estate property listing in La Convención, Cusco, linked to optimized visual assets.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 140
+        },
+        "zone": {
+          "type": "string",
+          "enum": ["Huayopata", "Quillabamba", "Santa Teresa", "Echarati", "Maranura"]
+        },
+        "category": {
+          "type": "string",
+          "enum": ["Fincas & Haciendas", "Villas & Residencias", "Terrenos de Inversión"]
+        },
+        "priceUsd": {
+          "type": "number"
+        },
+        "isLand": {
+          "type": "boolean"
+        },
+        "hectares": {
+          "type": "number"
+        },
+        "areaSqm": {
+          "type": "number"
+        },
+        "bedrooms": {
+          "type": "number"
+        },
+        "bathrooms": {
+          "type": "number"
+        },
+        "altitude": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "sunarpStatus": {
+          "type": "string",
+          "maxLength": 140
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 280
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 1200
+        },
+        "productivityOrArchitecture": {
+          "type": "string",
+          "maxLength": 140
+        },
+        "thumbUrl": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 320
+        },
+        "images": {
+          "type": "array",
+          "description": "Bounded gallery image URLs (up to 10)."
+        },
+        "features": {
+          "type": "array",
+          "description": "Bounded feature highlights (up to 10)."
+        },
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
+        },
+        "displayOrder": {
+          "type": "number"
+        },
+        "published": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "title",
+        "zone",
+        "category",
+        "priceUsd",
+        "isLand",
+        "altitude",
+        "sunarpStatus",
+        "summary",
+        "thumbUrl",
+        "images",
+        "displayOrder",
+        "published",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ValleyZoneDoc": {
+      "title": "ValleyZoneDoc",
+      "description": "District/zone visual and geographic catalog entry for La Convención.",
+      "type": "object",
+      "properties": {
+        "indexLabel": {
+          "type": "string",
+          "maxLength": 8
+        },
+        "name": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 64
+        },
+        "altitude": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "microclimate": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "tagline": {
+          "type": "string",
+          "maxLength": 220
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "imageUrl": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 320
+        },
+        "thumbUrl": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 320
+        },
+        "videoUrl": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 320
+        },
+        "posterUrl": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 320
+        },
+        "driveTime": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "published": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "name",
+        "altitude",
+        "imageUrl",
+        "videoUrl",
+        "posterUrl",
+        "published",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "LeadInquiry": {
+      "title": "LeadInquiry",
+      "description": "Private buyer/seller advisory inquiry stored securely with PII protection.",
+      "type": "object",
+      "properties": {
+        "referenceCode": {
+          "type": "string",
+          "pattern": "^TR-[0-9]{4}-[0-9]{4}$",
+          "maxLength": 24
+        },
+        "intent": {
+          "type": "string",
+          "enum": ["buy", "sell"]
+        },
+        "fullName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 5,
+          "maxLength": 160
+        },
+        "phone": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 40
+        },
+        "interest": {
+          "type": "string",
+          "maxLength": 320
+        },
+        "status": {
+          "type": "string",
+          "enum": ["new", "contacted", "archived"]
+        },
+        "ownerUid": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "referenceCode",
+        "intent",
+        "fullName",
+        "email",
+        "phone",
+        "status",
+        "ownerUid",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/media_assets/{assetId}": {
+      "schema": { "$ref": "#/entities/MediaAsset" },
+      "description": "Optimized WebP & faststart video catalog for instant rendering and Firestore offline cache."
+    },
+    "/properties/{propertyId}": {
+      "schema": { "$ref": "#/entities/PropertyListing" },
+      "description": "Public published portfolio of Terrantier Inmobiliaria properties."
+    },
+    "/zones/{zoneId}": {
+      "schema": { "$ref": "#/entities/ValleyZoneDoc" },
+      "description": "Public published microclimate and video metadata for La Convención districts."
+    },
+    "/leads/{leadId}": {
+      "schema": { "$ref": "#/entities/LeadInquiry" },
+      "description": "Private PII-isolated buyer and seller inquiry records."
+    }
+  }
+}

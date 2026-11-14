@@ -118,9 +118,15 @@ export function LeadCaptureSection({
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
         <div className="lg:col-span-5 space-y-6">
           <div>
-            <p className="text-sm font-medium text-[#9A783A] mb-2">
-              {copy.eyebrow}
-            </p>
+            <div className="flex items-center gap-3 mb-2.5">
+              <span
+                aria-hidden="true"
+                className="h-[1.5px] w-7 bg-gradient-to-r from-[#C8A562] to-[#9A783A]"
+              />
+              <p className="font-brand text-xs font-medium uppercase tracking-[0.22em] text-[#8B6A2E]">
+                {copy.eyebrow}
+              </p>
+            </div>
             <RevealText>
               <h2 className="font-serif text-[clamp(2rem,3.6vw,3rem)] font-normal leading-[1.12] tracking-tight text-[#0E2F1E]">
                 {copy.heading}
@@ -128,7 +134,7 @@ export function LeadCaptureSection({
             </RevealText>
           </div>
 
-          <p className="text-sm md:text-[15px] leading-relaxed text-[#2D3332]/80">
+          <p className="text-sm md:text-[15px] leading-relaxed text-[#2D3332]/90">
             {copy.subtitle}
           </p>
 
@@ -175,11 +181,11 @@ export function LeadCaptureSection({
         </div>
 
         <div className="lg:col-span-7">
-          <div className="rounded-2xl bg-white border border-[#0E2F1E]/10 p-6 sm:p-8 md:p-10 shadow-sm">
+          <div className="rounded-2xl bg-white border border-[#0E2F1E]/14 border-t-2 border-t-[#C8A562] p-6 sm:p-8 md:p-10 shadow-md">
             <div
               role="tablist"
               aria-label={copy.tabAria}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-1.5 rounded-xl bg-[#F3EFE6] mb-8"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-1.5 rounded-xl bg-[#F3EFE6] border border-[#0E2F1E]/10 mb-8"
             >
               <button
                 type="button"
@@ -192,8 +198,8 @@ export function LeadCaptureSection({
                 }}
                 className={`py-3 px-4 rounded-lg text-sm font-medium transition-all cursor-pointer ${
                   intent === 'buy'
-                    ? 'bg-white text-[#0E2F1E] shadow-sm'
-                    : 'text-[#2D3332]/75 hover:text-[#0E2F1E]'
+                    ? 'bg-[#0E2F1E] text-[#FAF8F3] shadow-sm'
+                    : 'text-[#2D3332]/80 hover:text-[#0E2F1E]'
                 }`}
               >
                 {copy.tabBuy}
@@ -209,8 +215,8 @@ export function LeadCaptureSection({
                 }}
                 className={`py-3 px-4 rounded-lg text-sm font-medium transition-all cursor-pointer ${
                   intent === 'sell'
-                    ? 'bg-white text-[#0E2F1E] shadow-sm'
-                    : 'text-[#2D3332]/75 hover:text-[#0E2F1E]'
+                    ? 'bg-[#0E2F1E] text-[#FAF8F3] shadow-sm'
+                    : 'text-[#2D3332]/80 hover:text-[#0E2F1E]'
                 }`}
               >
                 {copy.tabSell}
@@ -262,7 +268,7 @@ export function LeadCaptureSection({
                   <div>
                     <label
                       htmlFor="lead-name"
-                      className="block text-xs font-medium text-[#2D3332]/80 mb-1.5"
+                      className="block text-xs font-medium text-[#2D3332]/85 mb-1.5"
                     >
                       {copy.nameLabel}
                     </label>
@@ -272,14 +278,14 @@ export function LeadCaptureSection({
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder={copy.namePlaceholder}
-                      className="w-full rounded-xl border border-[#0E2F1E]/18 bg-[#FAF8F3] px-4 py-3 text-sm text-[#0E2F1E] placeholder:text-[#2D3332]/40 focus:border-[#0E2F1E] focus:bg-white focus:outline-none"
+                      className="w-full rounded-xl border border-[#0E2F1E]/22 bg-[#FAF8F3] px-4 py-3 text-sm text-[#0E2F1E] placeholder:text-[#2D3332]/45 focus:border-[#9A783A] focus:bg-white focus:outline-none"
                     />
                   </div>
 
                   <div>
                     <label
                       htmlFor="lead-phone"
-                      className="block text-xs font-medium text-[#2D3332]/80 mb-1.5"
+                      className="block text-xs font-medium text-[#2D3332]/85 mb-1.5"
                     >
                       {copy.phoneLabel}
                     </label>
@@ -289,7 +295,7 @@ export function LeadCaptureSection({
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+51 950 155 945"
-                      className="w-full rounded-xl border border-[#0E2F1E]/18 bg-[#FAF8F3] px-4 py-3 text-sm text-[#0E2F1E] placeholder:text-[#2D3332]/40 focus:border-[#0E2F1E] focus:bg-white focus:outline-none"
+                      className="w-full rounded-xl border border-[#0E2F1E]/22 bg-[#FAF8F3] px-4 py-3 text-sm text-[#0E2F1E] placeholder:text-[#2D3332]/45 focus:border-[#9A783A] focus:bg-white focus:outline-none"
                     />
                   </div>
                 </div>
@@ -297,7 +303,7 @@ export function LeadCaptureSection({
                 <div>
                   <label
                     htmlFor="lead-email"
-                    className="block text-xs font-medium text-[#2D3332]/80 mb-1.5"
+                    className="block text-xs font-medium text-[#2D3332]/85 mb-1.5"
                   >
                     {copy.emailLabel}
                   </label>
@@ -307,14 +313,14 @@ export function LeadCaptureSection({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={copy.emailPlaceholder}
-                    className="w-full rounded-xl border border-[#0E2F1E]/18 bg-[#FAF8F3] px-4 py-3 text-sm text-[#0E2F1E] placeholder:text-[#2D3332]/40 focus:border-[#0E2F1E] focus:bg-white focus:outline-none"
+                    className="w-full rounded-xl border border-[#0E2F1E]/22 bg-[#FAF8F3] px-4 py-3 text-sm text-[#0E2F1E] placeholder:text-[#2D3332]/45 focus:border-[#9A783A] focus:bg-white focus:outline-none"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="lead-interest"
-                    className="block text-xs font-medium text-[#2D3332]/80 mb-1.5"
+                    className="block text-xs font-medium text-[#2D3332]/85 mb-1.5"
                   >
                     {intent === 'buy' ? copy.interestBuyLabel : copy.interestSellLabel}
                   </label>
@@ -328,7 +334,7 @@ export function LeadCaptureSection({
                         ? copy.interestBuyPlaceholder
                         : copy.interestSellPlaceholder
                     }
-                    className="w-full rounded-xl border border-[#0E2F1E]/18 bg-[#FAF8F3] px-4 py-3 text-sm text-[#0E2F1E] placeholder:text-[#2D3332]/40 focus:border-[#0E2F1E] focus:bg-white focus:outline-none"
+                    className="w-full rounded-xl border border-[#0E2F1E]/22 bg-[#FAF8F3] px-4 py-3 text-sm text-[#0E2F1E] placeholder:text-[#2D3332]/45 focus:border-[#9A783A] focus:bg-white focus:outline-none"
                   />
                 </div>
 
@@ -341,7 +347,7 @@ export function LeadCaptureSection({
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#0E2F1E] hover:bg-[#1B4730] disabled:opacity-70 text-[#FAF8F3] text-sm font-medium px-6 py-3.5 transition-colors cursor-pointer"
+                  className="terrantier-gold-gradient w-full inline-flex items-center justify-center gap-2 rounded-xl hover:brightness-105 disabled:opacity-70 text-[#0E2F1E] text-sm font-semibold px-6 py-3.5 shadow-[0_10px_24px_-8px_rgba(200,165,98,0.65)] transition-all cursor-pointer"
                 >
                   {submitting ? (
                     <>

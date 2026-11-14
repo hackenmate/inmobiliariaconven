@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Maximize2, X } from 'lucide-react';
-import { HUAYOPATA_VALLEY_VIDEO, MEDIA_ASSETS } from '../data/valleyData';
+import { HUAYOPATA_VALLEY_VIDEO, MEDIA_ASSETS, VALLEY_VIDEO_POSTER } from '../data/valleyData';
 import { AutoPlayVideo, MediaImage, ORGANIC_EASE, RevealText } from './RevealText';
 import { UI_COPY, type LanguageCode } from '../i18n/translations';
 
@@ -37,9 +37,15 @@ export function ManifestoSection({ language }: ManifestoSectionProps) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-14">
           <div className="lg:col-span-7 space-y-5">
             <div>
-              <p className="text-sm font-medium text-[#9A783A] mb-2">
-                {copy.eyebrow}
-              </p>
+              <div className="flex items-center gap-3 mb-2.5">
+                <span
+                  aria-hidden="true"
+                  className="h-[1.5px] w-7 bg-gradient-to-r from-[#C8A562] to-[#9A783A]"
+                />
+                <p className="font-brand text-xs font-medium uppercase tracking-[0.22em] text-[#8B6A2E]">
+                  {copy.eyebrow}
+                </p>
+              </div>
               <RevealText>
                 <h2 className="font-serif text-[clamp(2rem,3.6vw,3rem)] font-normal leading-[1.12] tracking-tight text-[#0E2F1E]">
                   {copy.heading}
@@ -47,18 +53,19 @@ export function ManifestoSection({ language }: ManifestoSectionProps) {
               </RevealText>
             </div>
 
-            <p className="text-sm md:text-[15px] leading-relaxed text-[#2D3332]/80 max-w-xl">
+            <p className="text-sm md:text-[15px] leading-relaxed text-[#2D3332]/90 max-w-xl">
               {copy.subtitle}
             </p>
           </div>
 
           <div className="lg:col-span-5">
-            <div className="rounded-2xl overflow-hidden bg-[#F3EFE6] border border-[#0E2F1E]/10 aspect-[16/10]">
+            <div className="rounded-2xl overflow-hidden bg-[#F3EFE6] border border-[#C8A562]/35 shadow-[0_16px_36px_-14px_rgba(14,47,30,0.28)] aspect-[16/10]">
               <MediaImage
-                src={MEDIA_ASSETS.huayopataCampo}
+                src={MEDIA_ASSETS.huayopataCampoThumb}
                 alt="Recorrido de campo en camino rural de Huayopata"
                 fallbackTitle="Recorrido de campo en Huayopata"
-                className="w-full h-full object-cover"
+                loading="lazy"
+                className="w-full h-full object-cover saturate-[1.14] contrast-[1.04]"
               />
             </div>
           </div>
@@ -72,16 +79,22 @@ export function ManifestoSection({ language }: ManifestoSectionProps) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.65, delay: index * 0.08, ease: ORGANIC_EASE }}
-              className="rounded-2xl bg-[#F3EFE6] p-7 md:p-8 border border-[#0E2F1E]/10 flex flex-col justify-between gap-4"
+              className="rounded-2xl bg-[#F3EFE6] p-7 md:p-8 border border-[#C8A562]/35 hover:border-[#C8A562] transition-colors shadow-xs flex flex-col justify-between gap-4"
             >
-              <span className="font-serif text-3xl font-normal text-[#9A783A] tabular-nums">
-                {pillar.number}
-              </span>
+              <div className="space-y-3">
+                <div
+                  aria-hidden="true"
+                  className="h-[2px] w-12 bg-gradient-to-r from-[#C8A562] via-[#E8CF96] to-transparent"
+                />
+                <span className="block font-serif text-3xl font-normal text-[#8B6A2E] tabular-nums">
+                  {pillar.number}
+                </span>
+              </div>
               <div>
                 <h3 className="font-serif text-xl md:text-2xl font-normal text-[#0E2F1E] mb-2.5">
                   {pillar.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-[#2D3332]/80">
+                <p className="text-sm leading-relaxed text-[#2D3332]/90">
                   {pillar.description}
                 </p>
               </div>
@@ -94,22 +107,24 @@ export function ManifestoSection({ language }: ManifestoSectionProps) {
       <div className="relative w-full h-[54vh] min-h-[380px] max-h-[640px] bg-[#0E2F1E]">
         <AutoPlayVideo
           src={HUAYOPATA_VALLEY_VIDEO}
+          poster={VALLEY_VIDEO_POSTER}
           fallbackImage={MEDIA_ASSETS.huayopataCordillera}
+          lazyMount
           ariaLabel={copy.expandedAria}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover saturate-[1.16] contrast-[1.05]"
         />
 
         <div
-          className="absolute inset-0 bg-gradient-to-t from-[#091F14]/80 via-transparent to-[#091F14]/30 pointer-events-none"
+          className="absolute inset-0 bg-gradient-to-t from-[#091F14]/82 via-transparent to-transparent pointer-events-none"
           aria-hidden="true"
         />
 
         <div className="absolute inset-x-0 bottom-0 z-10 max-w-7xl mx-auto px-6 md:px-10 py-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4 text-[#FAF8F3]">
           <div className="max-w-xl">
-            <p className="text-xs font-medium text-[#E3C992] mb-1">
+            <p className="font-brand text-xs font-medium uppercase tracking-[0.2em] text-[#E8CF96] mb-1.5">
               {copy.videoEyebrow}
             </p>
-            <p className="font-serif text-xl md:text-2xl font-normal text-[#FAF8F3]">
+            <p className="font-serif text-xl md:text-2xl font-normal text-[#FAF8F3] drop-shadow-sm">
               {copy.videoCaption}
             </p>
           </div>
@@ -117,7 +132,7 @@ export function ManifestoSection({ language }: ManifestoSectionProps) {
           <button
             type="button"
             onClick={() => setTheaterOpen(true)}
-            className="inline-flex items-center gap-2 rounded-full bg-[#FAF8F3]/95 hover:bg-[#FAF8F3] text-[#0E2F1E] text-xs font-medium px-4 py-2.5 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+            className="terrantier-gold-gradient inline-flex items-center gap-2 rounded-full hover:brightness-105 text-[#0E2F1E] text-xs font-semibold px-4 py-2.5 shadow-lg transition-all whitespace-nowrap shrink-0 cursor-pointer"
           >
             <Maximize2 className="w-3.5 h-3.5" />
             <span>{copy.expandView}</span>

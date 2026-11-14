@@ -106,10 +106,10 @@ export function Navbar({ language, onChangeLanguage, onRequestQuote }: NavbarPro
           <button
             type="button"
             onClick={onRequestQuote}
-            className={`hidden sm:inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium whitespace-nowrap shrink-0 transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C8A562] ${
+            className={`hidden sm:inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm whitespace-nowrap shrink-0 transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C8A562] ${
               scrolled
-                ? 'bg-[#0E2F1E] text-[#FAF8F3] hover:bg-[#1B4730]'
-                : 'bg-[#FAF8F3] text-[#0E2F1E] hover:bg-[#F3EFE6]'
+                ? 'bg-[#0E2F1E] text-[#FAF8F3] font-medium hover:bg-[#1B4730] shadow-xs'
+                : 'terrantier-gold-gradient text-[#0E2F1E] font-semibold hover:brightness-105 shadow-[0_6px_18px_-4px_rgba(232,207,150,0.45)]'
             }`}
           >
             {copy.cta}

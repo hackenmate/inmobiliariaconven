@@ -217,8 +217,10 @@ export function PropertyModal({
                         }`}
                       >
                         <img
-                          src={imgSrc}
+                          src={property.thumbImages?.[idx] ?? imgSrc}
                           alt=""
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-cover"
                         />
                       </button>

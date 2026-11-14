@@ -384,20 +384,26 @@ export function FaqSection({ language }: FaqSectionProps) {
         {/* Columna izquierda: Preguntas frecuentes clave */}
         <div className="lg:col-span-6 space-y-8">
           <div>
-            <p className="text-sm font-medium text-[#9A783A] mb-2">
-              {copy.eyebrow}
-            </p>
+            <div className="flex items-center gap-3 mb-2.5">
+              <span
+                aria-hidden="true"
+                className="h-[1.5px] w-7 bg-gradient-to-r from-[#C8A562] to-[#9A783A]"
+              />
+              <p className="font-brand text-xs font-medium uppercase tracking-[0.22em] text-[#8B6A2E]">
+                {copy.eyebrow}
+              </p>
+            </div>
             <RevealText>
               <h2 className="font-serif text-[clamp(2rem,3.4vw,2.85rem)] font-normal leading-[1.12] tracking-tight text-[#0E2F1E]">
                 {copy.heading}
               </h2>
             </RevealText>
-            <p className="mt-3 text-sm md:text-[15px] text-[#2D3332]/75 leading-relaxed">
+            <p className="mt-3 text-sm md:text-[15px] text-[#2D3332]/85 leading-relaxed">
               {copy.subtitle}
             </p>
           </div>
 
-          <div className="divide-y divide-[#0E2F1E]/10 border-y border-[#0E2F1E]/10">
+          <div className="divide-y divide-[#0E2F1E]/12 border-y border-[#0E2F1E]/12">
             {staticFaqs.map((item) => {
               const isOpen = openFaqId === item.id;
               return (
@@ -406,9 +412,9 @@ export function FaqSection({ language }: FaqSectionProps) {
                     type="button"
                     aria-expanded={isOpen}
                     onClick={() => setOpenFaqId(isOpen ? '' : item.id)}
-                    className="w-full flex items-start justify-between gap-4 text-left cursor-pointer py-1"
+                    className="w-full flex items-start justify-between gap-4 text-left cursor-pointer py-1 group"
                   >
-                    <span className="font-serif text-lg font-normal text-[#0E2F1E] leading-snug">
+                    <span className="font-serif text-lg font-normal text-[#0E2F1E] group-hover:text-[#1B4730] transition-colors leading-snug">
                       {item.question}
                     </span>
                     <ChevronDown
@@ -418,7 +424,7 @@ export function FaqSection({ language }: FaqSectionProps) {
                     />
                   </button>
                   {isOpen && (
-                    <p className="mt-2.5 pr-6 text-sm text-[#2D3332]/80 leading-relaxed">
+                    <p className="mt-2.5 pr-6 text-sm text-[#2D3332]/90 leading-relaxed">
                       {item.answer}
                     </p>
                   )}
@@ -430,10 +436,10 @@ export function FaqSection({ language }: FaqSectionProps) {
 
         {/* Columna derecha: Consulta directa (máx. 2 preguntas por usuario) */}
         <div className="lg:col-span-6">
-          <div className="rounded-2xl bg-white border border-[#0E2F1E]/12 p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="rounded-2xl bg-white border border-[#0E2F1E]/14 border-t-2 border-t-[#C8A562] p-6 sm:p-8 shadow-md space-y-6">
             <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[#0E2F1E]/10 pb-5">
               <div>
-                <p className="text-xs font-medium text-[#9A783A]">
+                <p className="font-brand text-xs uppercase tracking-[0.18em] font-medium text-[#8B6A2E]">
                   {copy.assistantEyebrow}
                 </p>
                 <h3 className="font-serif text-2xl font-normal text-[#0E2F1E] mt-1">
@@ -596,7 +602,7 @@ export function FaqSection({ language }: FaqSectionProps) {
                     <button
                       type="submit"
                       disabled={submitting || voiceState !== 'idle'}
-                      className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-[#0E2F1E] hover:bg-[#1B4730] disabled:opacity-60 text-[#FAF8F3] text-xs font-medium px-5 py-3 transition-colors cursor-pointer"
+                      className="terrantier-gold-gradient flex-1 inline-flex items-center justify-center gap-2 rounded-xl hover:brightness-105 disabled:opacity-60 text-[#0E2F1E] text-xs font-semibold px-5 py-3 shadow-sm transition-all cursor-pointer"
                     >
                       {submitting ? (
                         <>
@@ -605,7 +611,7 @@ export function FaqSection({ language }: FaqSectionProps) {
                         </>
                       ) : (
                         <>
-                          <Send className="w-3.5 h-3.5 text-[#E3C992]" />
+                          <Send className="w-3.5 h-3.5" />
                           <span>{copy.submitBtn(quota.remaining)}</span>
                         </>
                       )}
@@ -617,7 +623,7 @@ export function FaqSection({ language }: FaqSectionProps) {
                       onClick={startVoiceConsultation}
                       className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#0E2F1E]/25 bg-[#FAF8F3] hover:bg-[#F3EFE6] disabled:opacity-60 text-[#0E2F1E] text-xs font-medium px-4 py-3 transition-colors cursor-pointer whitespace-nowrap"
                     >
-                      <Mic className="w-3.5 h-3.5 text-[#9A783A]" />
+                      <Mic className="w-3.5 h-3.5 text-[#8B6A2E]" />
                       <span>{copy.voiceBtn}</span>
                     </button>
                   </div>

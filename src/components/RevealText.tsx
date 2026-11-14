@@ -40,21 +40,34 @@ interface MediaImageProps {
   alt: string;
   className?: string;
   fallbackTitle?: string;
+  loading?: 'eager' | 'lazy';
+  fetchPriority?: 'high' | 'low' | 'auto';
 }
 
-export function MediaImage({ src, alt, className = '', fallbackTitle }: MediaImageProps) {
+export function MediaImage({
+  src,
+  alt,
+  className = '',
+  fallbackTitle,
+  loading = 'lazy',
+  fetchPriority = 'auto',
+}: MediaImageProps) {
   const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setHasError(false);
+  }, [src]);
 
   if (hasError || !src) {
     return (
       <div
-        className={`flex flex-col items-center justify-center bg-gradient-to-br from-[#18241E] via-[#213329] to-[#2A4736] text-[#FAF9F6]/85 p-6 text-center ${className}`}
+        className={`flex flex-col items-center justify-center bg-gradient-to-br from-[#0E2F1E] via-[#1B4730] to-[#0E2F1E] text-[#FAF8F3]/85 p-6 text-center ${className}`}
         role="img"
         aria-label={alt}
       >
-        <Mountain className="w-8 h-8 mb-2 text-[#E4CFAF]" strokeWidth={1.5} />
+        <Mountain className="w-8 h-8 mb-2 text-[#E3C992]" strokeWidth={1.5} />
         {fallbackTitle && (
-          <span className="font-serif text-lg tracking-wide text-[#FAF9F6]">
+          <span className="font-serif text-lg tracking-wide text-[#FAF8F3]">
             {fallbackTitle}
           </span>
         )}
@@ -66,6 +79,9 @@ export function MediaImage({ src, alt, className = '', fallbackTitle }: MediaIma
     <img
       src={src}
       alt={alt}
+      loading={loading}
+      decoding="async"
+      fetchPriority={fetchPriority}
       referrerPolicy="no-referrer"
       onError={() => setHasError(true)}
       className={className}
@@ -80,6 +96,7 @@ interface AutoPlayVideoProps {
   className?: string;
   ariaLabel?: string;
   ariaHidden?: boolean;
+  lazyMount?: boolean;
 }
 
 export function AutoPlayVideo({
@@ -89,12 +106,37 @@ export function AutoPlayVideo({
   className = '',
   ariaLabel,
   ariaHidden = false,
+  lazyMount = false,
 }: AutoPlayVideoProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [shouldMountVideo, setShouldMountVideo] = useState(!lazyMount);
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
+    if (!lazyMount || shouldMountVideo) return;
+    const target = containerRef.current;
+    if (!target || typeof IntersectionObserver === 'undefined') {
+      setShouldMountVideo(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setShouldMountVideo(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '420px 0px' },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [lazyMount, shouldMountVideo]);
+
+  useEffect(() => {
     setHasError(false);
+    if (!shouldMountVideo) return;
     const el = videoRef.current;
     if (!el) return;
 
@@ -132,15 +174,33 @@ export function AutoPlayVideo({
       el.removeEventListener('canplay', tryPlay);
       observer?.disconnect();
     };
-  }, [src]);
+  }, [src, shouldMountVideo]);
 
-  if (hasError && fallbackImage) {
+  if (hasError && (fallbackImage || poster)) {
     return (
       <MediaImage
-        src={fallbackImage}
+        src={fallbackImage ?? poster ?? ''}
         alt={ariaLabel ?? 'Vista aérea de Huayopata en La Convención'}
+        loading="eager"
         className={className}
       />
+    );
+  }
+
+  if (!shouldMountVideo) {
+    return (
+      <div ref={containerRef} className={`w-full h-full ${className}`}>
+        {(poster || fallbackImage) && (
+          <img
+            src={poster ?? fallbackImage}
+            alt={ariaLabel ?? ''}
+            aria-hidden={ariaHidden}
+            loading="lazy"
+            decoding="async"
+            className={className}
+          />
+        )}
+      </div>
     );
   }
 
@@ -154,7 +214,7 @@ export function AutoPlayVideo({
       muted
       loop
       playsInline
-      preload="auto"
+      preload={lazyMount ? 'metadata' : 'auto'}
       onError={() => setHasError(true)}
       aria-label={ariaLabel}
       aria-hidden={ariaHidden}
@@ -162,4 +222,3 @@ export function AutoPlayVideo({
     />
   );
 }
-

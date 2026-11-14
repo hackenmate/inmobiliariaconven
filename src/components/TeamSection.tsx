@@ -1,6 +1,7 @@
 import { ArrowUpRight, Compass, MessageCircle, Phone, ShieldCheck } from 'lucide-react';
 import { AGENTS, MEDIA_ASSETS, type AgentProfile } from '../data/valleyData';
 import { getLocalizedAgent, UI_COPY, type LanguageCode } from '../i18n/translations';
+import { TerrantierMonogram, TerrantierPatternOverlay } from './BrandLogo';
 import { MediaImage, RevealText } from './RevealText';
 
 interface TeamSectionProps {
@@ -15,14 +16,21 @@ export function TeamSection({ language, onSelectAgent }: TeamSectionProps) {
   return (
     <section
       id="equipo"
-      className="scroll-mt-20 bg-[#F3EFE6] text-[#0E2F1E] py-20 md:py-28 px-6 md:px-10"
+      className="relative overflow-hidden scroll-mt-20 bg-[#F3EFE6] text-[#0E2F1E] py-20 md:py-28 px-6 md:px-10"
     >
-      <div className="max-w-7xl mx-auto">
+      <TerrantierPatternOverlay opacityClass="opacity-[0.035]" />
+      <div className="relative z-10 max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-14">
           <div className="max-w-2xl">
-            <p className="text-sm font-medium text-[#9A783A] mb-2">
-              {copy.eyebrow}
-            </p>
+            <div className="flex items-center gap-3 mb-2.5">
+              <span
+                aria-hidden="true"
+                className="h-[1.5px] w-7 bg-gradient-to-r from-[#C8A562] to-[#9A783A]"
+              />
+              <p className="font-brand text-xs font-medium uppercase tracking-[0.22em] text-[#8B6A2E]">
+                {copy.eyebrow}
+              </p>
+            </div>
             <RevealText>
               <h2 className="font-serif text-[clamp(2rem,3.6vw,3rem)] font-normal leading-[1.12] tracking-tight text-[#0E2F1E]">
                 {copy.heading}
@@ -30,7 +38,7 @@ export function TeamSection({ language, onSelectAgent }: TeamSectionProps) {
             </RevealText>
           </div>
 
-          <p className="text-sm md:text-[15px] text-[#2D3332]/75 max-w-md leading-relaxed">
+          <p className="text-sm md:text-[15px] text-[#2D3332]/85 max-w-md leading-relaxed">
             {copy.subtitle}
           </p>
         </div>
@@ -46,24 +54,25 @@ export function TeamSection({ language, onSelectAgent }: TeamSectionProps) {
             return (
               <article
                 key={agent.id}
-                className="rounded-2xl overflow-hidden bg-white border border-[#0E2F1E]/10 shadow-sm flex flex-col sm:grid sm:grid-cols-12"
+                className="rounded-2xl overflow-hidden bg-white border border-[#0E2F1E]/14 hover:border-[#C8A562] shadow-md transition-colors flex flex-col sm:grid sm:grid-cols-12"
               >
                 {/* Retrato / Identidad visual del asesor */}
                 <div className="sm:col-span-5 relative bg-[#0E2F1E] text-[#FAF8F3] min-h-[290px] sm:min-h-full overflow-hidden">
                   {agent.photo ? (
                     <>
                       <MediaImage
-                        src={agent.photo}
+                        src={agent.photoThumb ?? agent.photo}
                         alt={`${agent.name}, ${agent.role}`}
                         fallbackTitle={agent.name}
-                        className="w-full h-full object-cover object-[center_20%]"
+                        loading="lazy"
+                        className="w-full h-full object-cover object-[center_20%] saturate-[1.12] contrast-[1.04]"
                       />
                       <div
                         aria-hidden="true"
-                        className="absolute inset-0 bg-gradient-to-t from-[#091F14]/90 via-transparent to-transparent pointer-events-none"
+                        className="absolute inset-0 bg-gradient-to-t from-[#091F14]/88 via-transparent to-transparent pointer-events-none"
                       />
                       <div className="absolute inset-x-0 bottom-0 p-4 text-white">
-                        <span className="inline-block text-[11px] font-medium text-[#E3C992]">
+                        <span className="inline-block font-brand text-[10px] uppercase tracking-[0.18em] font-medium text-[#E8CF96]">
                           {copy.marianoBadge}
                         </span>
                         <p className="font-serif text-xl font-normal">{agent.name}</p>
@@ -72,27 +81,32 @@ export function TeamSection({ language, onSelectAgent }: TeamSectionProps) {
                   ) : (
                     <>
                       <MediaImage
-                        src={MEDIA_ASSETS.huayopataCordillera}
+                        src={MEDIA_ASSETS.huayopataCordilleraThumb}
                         alt={`${agent.name} · ${agent.coverage}`}
                         fallbackTitle={agent.name}
-                        className="w-full h-full object-cover opacity-35"
+                        loading="lazy"
+                        className="w-full h-full object-cover opacity-55 saturate-[1.15]"
                       />
                       <div
                         aria-hidden="true"
-                        className="absolute inset-0 bg-gradient-to-t from-[#091F14]/95 via-[#0E2F1E]/80 to-[#0E2F1E]/65"
+                        className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(232,207,150,0.22),transparent_55%)]"
+                      />
+                      <div
+                        aria-hidden="true"
+                        className="absolute inset-0 bg-gradient-to-t from-[#091F14]/92 via-[#0E2F1E]/65 to-[#0E2F1E]/50"
                       />
                       <div className="relative z-10 h-full p-6 flex flex-col justify-between">
-                        <div className="w-14 h-14 rounded-2xl bg-[#FAF8F3]/10 border border-[#C8A562]/40 flex items-center justify-center font-serif text-2xl text-[#E3C992]">
-                          {agent.name.slice(0, 1)}
+                        <div className="w-16 h-16 rounded-2xl bg-[#091F14]/55 backdrop-blur-sm border border-[#C8A562]/50 flex items-center justify-center shadow-lg">
+                          <TerrantierMonogram className="w-10 h-9" />
                         </div>
                         <div>
-                          <span className="inline-block text-[11px] font-medium text-[#E3C992] mb-1">
+                          <span className="inline-block font-brand text-[10px] uppercase tracking-[0.18em] font-medium text-[#E8CF96] mb-1">
                             {copy.joseBadge}
                           </span>
                           <p className="font-serif text-2xl font-normal text-[#FAF8F3]">
                             {agent.name}
                           </p>
-                          <p className="text-xs text-[#FAF8F3]/75 mt-1">{agent.coverage}</p>
+                          <p className="text-xs text-[#FAF8F3]/85 mt-1">{agent.coverage}</p>
                         </div>
                       </div>
                     </>
@@ -102,8 +116,8 @@ export function TeamSection({ language, onSelectAgent }: TeamSectionProps) {
                 {/* Biografía y contacto directo */}
                 <div className="sm:col-span-7 p-6 md:p-7 flex flex-col justify-between gap-5">
                   <div>
-                    <div className="flex items-center gap-1.5 text-xs font-medium text-[#9A783A]">
-                      <Compass className="w-3.5 h-3.5 shrink-0" />
+                    <div className="flex items-center gap-1.5 text-xs font-medium text-[#8B6A2E]">
+                      <Compass className="w-3.5 h-3.5 shrink-0 text-[#C8A562]" />
                       <span>{agent.coverage}</span>
                     </div>
 
@@ -112,7 +126,7 @@ export function TeamSection({ language, onSelectAgent }: TeamSectionProps) {
                     </h3>
                     <p className="text-xs font-medium text-[#1B4730] mt-0.5">{agent.role}</p>
 
-                    <p className="mt-3 text-sm leading-relaxed text-[#2D3332]/80">{agent.bio}</p>
+                    <p className="mt-3 text-sm leading-relaxed text-[#2D3332]/90">{agent.bio}</p>
 
                     <ul className="mt-4 space-y-1.5 pt-4 border-t border-[#0E2F1E]/10">
                       {agent.specialties.map((item) => (

@@ -195,3 +195,16 @@ export function TerrantierPatternOverlay({
     </svg>
   );
 }
+
+/**
+ * Doble filete metálico dorado inspirado en el sistema de marca Terrantier.
+ */
+export function TerrantierGoldRule({ className = '' }: { className?: string }) {
+  return (
+    <div aria-hidden="true" className={`w-full flex flex-col gap-[3px] ${className}`}>
+      <div className="h-[2px] w-full bg-gradient-to-r from-[#9A783A]/30 via-[#C8A562] to-[#9A783A]/30" />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-[#E6CC8F]/70 to-transparent" />
+    </div>
+  );
+}
+

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { HUAYOPATA_REEL_PHOTOS, type FilmReelPhoto } from '../data/valleyData';
 import { getLocalizedReelPhoto, UI_COPY, type LanguageCode } from '../i18n/translations';
+import { preloadImageUrl } from '../services/visualCatalog';
+import { TerrantierGoldRule } from './BrandLogo';
 import { RevealText } from './RevealText';
 
 interface FilmReelGalleryProps {
@@ -42,15 +44,20 @@ export function FilmReelGallery({
     <section
       id="cinta-aerea"
       aria-label={copy.ariaLabel}
-      className="scroll-mt-20 bg-[#FAF8F3] text-[#0E2F1E] py-16 md:py-22 overflow-hidden"
+      className="scroll-mt-20 relative bg-[#F3EFE6] text-[#0E2F1E] pt-0 pb-18 md:pb-24 overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-10 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <TerrantierGoldRule />
+
+      <div className="max-w-7xl mx-auto px-6 md:px-10 pt-14 md:pt-18 mb-9 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-[#9A783A] mb-2">
-            {copy.eyebrow}
-          </p>
+          <div className="flex items-center gap-2.5 mb-2">
+            <span className="h-px w-6 bg-[#9A783A]" aria-hidden="true" />
+            <p className="font-brand text-xs font-medium tracking-[0.16em] uppercase text-[#8B6A2E]">
+              {copy.eyebrow}
+            </p>
+          </div>
           <RevealText>
-            <h2 className="font-serif text-[clamp(1.9rem,3.4vw,2.8rem)] font-normal leading-[1.12] tracking-tight text-[#0E2F1E]">
+            <h2 className="font-serif text-[clamp(1.95rem,3.5vw,2.9rem)] font-normal leading-[1.12] tracking-tight text-[#0E2F1E]">
               {copy.heading}
             </h2>
           </RevealText>
@@ -66,26 +73,27 @@ export function FilmReelGallery({
               aria-hidden={loopIndex === 1}
               className="flex flex-shrink-0 items-center gap-6 md:gap-8 pr-6 md:pr-8"
             >
-              {localizedPhotos.map((photo) => (
+              {localizedPhotos.map((photo, idx) => (
                 <figure
                   key={`reel-${loopIndex}-${photo.id}`}
+                  onMouseEnter={() => preloadImageUrl(photo.src)}
                   onClick={() => setSelectedPhotoId(photo.id)}
-                  className="group relative flex-shrink-0 h-[320px] sm:h-[390px] md:h-[450px] w-[85vw] sm:w-[560px] md:w-[700px] rounded-2xl overflow-hidden bg-[#0E2F1E] border border-[#0E2F1E]/10 shadow-sm cursor-pointer"
+                  className="group relative flex-shrink-0 h-[320px] sm:h-[390px] md:h-[450px] w-[85vw] sm:w-[560px] md:w-[700px] rounded-2xl overflow-hidden bg-[#0E2F1E] border border-[#C8A562]/30 shadow-[0_14px_34px_rgba(14,47,30,0.14)] cursor-pointer"
                 >
                   <img
-                    src={photo.src}
+                    src={photo.thumb ?? photo.src}
                     alt={photo.title}
-                    loading="eager"
+                    loading={loopIndex === 0 && idx < 3 ? 'eager' : 'lazy'}
                     decoding="async"
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    className="w-full h-full object-cover saturate-[1.15] contrast-[1.05] transition-transform duration-700 ease-out group-hover:scale-105"
                   />
                   <div
                     aria-hidden="true"
-                    className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-300 pointer-events-none"
+                    className="absolute inset-0 bg-gradient-to-t from-[#091F14]/85 via-[#091F14]/15 to-transparent opacity-85 group-hover:opacity-95 transition-opacity duration-300 pointer-events-none"
                   />
-                  <figcaption className="absolute inset-x-0 bottom-0 p-6 text-white pointer-events-none">
-                    <p className="text-xs font-medium text-[#E3C992] mb-1">{photo.caption}</p>
-                    <p className="font-serif text-xl md:text-2xl font-normal tracking-tight">
+                  <figcaption className="absolute inset-x-0 bottom-0 p-6 md:p-7 text-white pointer-events-none">
+                    <p className="text-xs font-medium text-[#E8CF96] mb-1">{photo.caption}</p>
+                    <p className="font-serif text-xl md:text-2xl font-normal tracking-tight text-white">
                       {photo.title}
                     </p>
                   </figcaption>

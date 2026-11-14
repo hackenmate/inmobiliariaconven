@@ -4,7 +4,11 @@ import path from 'path';
 import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
+  const rawBase = process.env.VITE_BASE_PATH?.trim() || '/';
+  const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+
   return {
+    base,
     publicDir: 'public_web',
     plugins: [react(), tailwindcss()],
     define: {

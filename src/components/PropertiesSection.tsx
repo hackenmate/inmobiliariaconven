@@ -22,6 +22,7 @@ import {
 
 interface PropertiesSectionProps {
   language: LanguageCode;
+  properties?: PropertyItem[];
   filters: HeroSearchFilters;
   currency: CurrencyCode;
   penRate: number;
@@ -45,6 +46,7 @@ const ZONE_FILTERS: Array<'all' | ZoneId> = [
 
 export function PropertiesSection({
   language,
+  properties = PROPERTIES,
   filters,
   currency,
   penRate,
@@ -73,7 +75,7 @@ export function PropertiesSection({
     { value: 'over-550', label: copy.budgetOver550 },
   ];
 
-  const filteredProperties = PROPERTIES.filter((prop) => {
+  const filteredProperties = properties.filter((prop) => {
     if (filters.location !== 'all' && prop.zone !== filters.location) return false;
     if (filters.category !== 'all' && prop.category !== filters.category) return false;
     if (filters.budget === 'under-250' && prop.priceUsd > 250000) return false;
@@ -87,7 +89,7 @@ export function PropertiesSection({
     .map((p) => getLocalizedProperty(p, language));
 
   const selectedProperty =
-    PROPERTIES.map((p) => getLocalizedProperty(p, language)).find(
+    properties.map((p) => getLocalizedProperty(p, language)).find(
       (p) => p.id === selectedPropertyId,
     ) ?? null;
 
@@ -102,9 +104,12 @@ export function PropertiesSection({
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
           <div className="max-w-2xl">
-            <p className="text-sm font-medium text-[#9A783A] mb-2">
-              {copy.eyebrow}
-            </p>
+            <div className="flex items-center gap-2.5 mb-2">
+              <span className="h-px w-6 bg-[#9A783A]" aria-hidden="true" />
+              <p className="font-brand text-xs font-medium tracking-[0.16em] uppercase text-[#8B6A2E]">
+                {copy.eyebrow}
+              </p>
+            </div>
             <RevealText>
               <h2 className="font-serif text-[clamp(2rem,3.6vw,3rem)] font-normal leading-[1.12] tracking-tight text-[#0E2F1E]">
                 {copy.heading}
@@ -113,14 +118,14 @@ export function PropertiesSection({
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-[#F3EFE6] border border-[#0E2F1E]/10 self-start">
+            <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-[#F3EFE6] border border-[#C8A562]/30 self-start">
               <button
                 type="button"
                 onClick={() => onChangeCurrency('USD')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   currency === 'USD'
-                    ? 'bg-white text-[#0E2F1E] shadow-sm'
-                    : 'text-[#2D3332]/70 hover:text-[#0E2F1E]'
+                    ? 'bg-[#0E2F1E] text-[#FAF8F3] shadow-sm'
+                    : 'text-[#2D3332]/80 hover:text-[#0E2F1E]'
                 }`}
               >
                 USD ($)
@@ -128,27 +133,27 @@ export function PropertiesSection({
               <button
                 type="button"
                 onClick={() => onChangeCurrency('PEN')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   currency === 'PEN'
-                    ? 'bg-white text-[#0E2F1E] shadow-sm'
-                    : 'text-[#2D3332]/70 hover:text-[#0E2F1E]'
+                    ? 'bg-[#0E2F1E] text-[#FAF8F3] shadow-sm'
+                    : 'text-[#2D3332]/80 hover:text-[#0E2F1E]'
                 }`}
               >
                 PEN (S/)
               </button>
-              <span className="px-2.5 text-[11px] text-[#2D3332]/65 tabular-nums whitespace-nowrap">
+              <span className="px-2.5 text-[11px] font-medium text-[#2D3332]/85 tabular-nums whitespace-nowrap">
                 {language === 'en' ? 'FX' : 'T.C.'} S/ {penRate.toFixed(2)}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 pb-8 mb-10 border-b border-[#0E2F1E]/10">
+        <div className="flex flex-col gap-4 pb-8 mb-10 border-b border-[#C8A562]/30">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div
               role="tablist"
               aria-label={language === 'en' ? 'Filter by property type' : 'Filtrar por tipo de propiedad'}
-              className="inline-flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-[#F3EFE6]"
+              className="inline-flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-[#F3EFE6] border border-[#0E2F1E]/8"
             >
               {tabs.map((tab) => {
                 const isActive = filters.category === tab.id;
@@ -161,8 +166,8 @@ export function PropertiesSection({
                     onClick={() => onChangeCategory(tab.id)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap shrink-0 transition-all duration-200 cursor-pointer ${
                       isActive
-                        ? 'bg-white text-[#0E2F1E] shadow-sm'
-                        : 'text-[#2D3332]/75 hover:text-[#0E2F1E]'
+                        ? 'bg-[#0E2F1E] text-[#FAF8F3] shadow-sm'
+                        : 'text-[#2D3332]/85 hover:text-[#0E2F1E]'
                     }`}
                   >
                     {tab.label}

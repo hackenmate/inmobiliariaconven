@@ -1,0 +1,230 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return isVerifiedUser() && (
+        request.auth.token.email == 'moneda1solperu@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidMediaAsset(data) {
+      return data.keys().hasAll([
+          'slug', 'section', 'titleEs', 'titleEn',
+          'thumbUrl', 'fullUrl', 'sortOrder', 'published',
+          'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'slug', 'section', 'titleEs', 'titleEn',
+          'captionEs', 'captionEn', 'thumbUrl', 'fullUrl',
+          'videoUrl', 'posterUrl', 'width', 'height', 'sizeKb',
+          'sortOrder', 'published', 'createdAt', 'updatedAt'
+        ])
+        && data.slug is string && data.slug.size() >= 2 && data.slug.size() <= 96 && data.slug.matches('^[a-z0-9-]+$')
+        && data.section is string && data.section.size() <= 32 && data.section in ['hero', 'reel', 'property', 'zone', 'team', 'manifesto']
+        && data.titleEs is string && data.titleEs.size() >= 2 && data.titleEs.size() <= 140
+        && data.titleEn is string && data.titleEn.size() >= 2 && data.titleEn.size() <= 140
+        && (!('captionEs' in data) || (data.captionEs is string && data.captionEs.size() <= 220))
+        && (!('captionEn' in data) || (data.captionEn is string && data.captionEn.size() <= 220))
+        && data.thumbUrl is string && data.thumbUrl.size() >= 3 && data.thumbUrl.size() <= 320
+        && data.fullUrl is string && data.fullUrl.size() >= 3 && data.fullUrl.size() <= 320
+        && (!('videoUrl' in data) || (data.videoUrl is string && data.videoUrl.size() <= 320))
+        && (!('posterUrl' in data) || (data.posterUrl is string && data.posterUrl.size() <= 320))
+        && (!('width' in data) || (data.width is number && data.width >= 1 && data.width <= 8192))
+        && (!('height' in data) || (data.height is number && data.height >= 1 && data.height <= 8192))
+        && (!('sizeKb' in data) || (data.sizeKb is number && data.sizeKb >= 0 && data.sizeKb <= 50000))
+        && data.sortOrder is number && data.sortOrder >= 0 && data.sortOrder <= 10000
+        && data.published is bool
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidProperty(data) {
+      return data.keys().hasAll([
+          'title', 'zone', 'category', 'priceUsd', 'isLand',
+          'altitude', 'sunarpStatus', 'summary', 'thumbUrl',
+          'images', 'displayOrder', 'published', 'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'title', 'zone', 'category', 'priceUsd', 'isLand',
+          'hectares', 'areaSqm', 'bedrooms', 'bathrooms',
+          'altitude', 'sunarpStatus', 'summary', 'description',
+          'productivityOrArchitecture', 'thumbUrl', 'images',
+          'features', 'lat', 'lng', 'displayOrder', 'published',
+          'createdAt', 'updatedAt'
+        ])
+        && data.title is string && data.title.size() >= 3 && data.title.size() <= 140
+        && data.zone is string && data.zone.size() <= 40 && data.zone in ['Huayopata', 'Quillabamba', 'Santa Teresa', 'Echarati', 'Maranura']
+        && data.category is string && data.category.size() <= 40 && data.category in ['Fincas & Haciendas', 'Villas & Residencias', 'Terrenos de Inversión']
+        && data.priceUsd is number && data.priceUsd > 0 && data.priceUsd <= 50000000
+        && data.isLand is bool
+        && (!('hectares' in data) || (data.hectares is number && data.hectares > 0))
+        && (!('areaSqm' in data) || (data.areaSqm is number && data.areaSqm > 0))
+        && (!('bedrooms' in data) || (data.bedrooms is number && data.bedrooms >= 0))
+        && (!('bathrooms' in data) || (data.bathrooms is number && data.bathrooms >= 0))
+        && data.altitude is string && data.altitude.size() >= 2 && data.altitude.size() <= 64
+        && data.sunarpStatus is string && data.sunarpStatus.size() >= 3 && data.sunarpStatus.size() <= 140
+        && data.summary is string && data.summary.size() >= 3 && data.summary.size() <= 280
+        && (!('description' in data) || (data.description is string && data.description.size() <= 1200))
+        && (!('productivityOrArchitecture' in data) || (data.productivityOrArchitecture is string && data.productivityOrArchitecture.size() <= 140))
+        && data.thumbUrl is string && data.thumbUrl.size() >= 3 && data.thumbUrl.size() <= 320
+        && data.images is list && data.images.size() >= 1 && data.images.size() <= 10 && data.images[0] is string
+        && (!('features' in data) || (data.features is list && data.features.size() >= 1 && data.features.size() <= 10 && data.features[0] is string))
+        && (!('lat' in data) || data.lat is number)
+        && (!('lng' in data) || data.lng is number)
+        && data.displayOrder is number && data.displayOrder >= 0 && data.displayOrder <= 1000
+        && data.published is bool
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidZone(data) {
+      return data.keys().hasAll([
+          'name', 'altitude', 'imageUrl', 'videoUrl',
+          'posterUrl', 'published', 'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'indexLabel', 'name', 'altitude', 'microclimate',
+          'tagline', 'description', 'imageUrl', 'thumbUrl',
+          'videoUrl', 'posterUrl', 'driveTime', 'published',
+          'createdAt', 'updatedAt'
+        ])
+        && (!('indexLabel' in data) || (data.indexLabel is string && data.indexLabel.size() <= 8))
+        && data.name is string && data.name.size() >= 2 && data.name.size() <= 64
+        && data.altitude is string && data.altitude.size() >= 2 && data.altitude.size() <= 64
+        && (!('microclimate' in data) || (data.microclimate is string && data.microclimate.size() <= 120))
+        && (!('tagline' in data) || (data.tagline is string && data.tagline.size() <= 220))
+        && (!('description' in data) || (data.description is string && data.description.size() <= 600))
+        && data.imageUrl is string && data.imageUrl.size() >= 3 && data.imageUrl.size() <= 320
+        && (!('thumbUrl' in data) || (data.thumbUrl is string && data.thumbUrl.size() <= 320))
+        && data.videoUrl is string && data.videoUrl.size() >= 3 && data.videoUrl.size() <= 320
+        && data.posterUrl is string && data.posterUrl.size() >= 3 && data.posterUrl.size() <= 320
+        && (!('driveTime' in data) || (data.driveTime is string && data.driveTime.size() <= 64))
+        && data.published is bool
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidLead(data) {
+      return data.keys().hasAll([
+          'referenceCode', 'intent', 'fullName', 'email',
+          'phone', 'status', 'ownerUid', 'createdAt'
+        ])
+        && data.keys().hasOnly([
+          'referenceCode', 'intent', 'fullName', 'email',
+          'phone', 'interest', 'status', 'ownerUid', 'notes', 'createdAt'
+        ])
+        && data.referenceCode is string && data.referenceCode.size() <= 24 && data.referenceCode.matches('^TR-[0-9]{4}-[0-9]{4}$')
+        && data.intent is string && data.intent.size() <= 10 && data.intent in ['buy', 'sell']
+        && data.fullName is string && data.fullName.size() >= 2 && data.fullName.size() <= 120
+        && data.email is string && data.email.size() >= 5 && data.email.size() <= 160
+        && data.phone is string && data.phone.size() >= 7 && data.phone.size() <= 40
+        && (!('interest' in data) || (data.interest is string && data.interest.size() <= 320))
+        && data.status is string && data.status.size() <= 16 && data.status in ['new', 'contacted', 'archived']
+        && data.ownerUid is string && data.ownerUid.size() >= 1 && data.ownerUid.size() <= 128
+        && (!('notes' in data) || (data.notes is string && data.notes.size() <= 500))
+        && data.createdAt is timestamp;
+    }
+
+    match /test/connection {
+      allow get: if true;
+    }
+
+    match /admins/{uid} {
+      allow get: if isVerifiedUser() && isValidId(uid) && (request.auth.uid == uid || isAdmin());
+      allow list, create, update, delete: if false;
+    }
+
+    match /media_assets/{assetId} {
+      allow get: if isValidId(assetId) && (existing().published == true || isAdmin());
+      allow list: if existing().published == true || isAdmin();
+      allow create: if isAdmin() && isValidId(assetId) && isValidMediaAsset(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isAdmin() && isValidId(assetId) && isValidMediaAsset(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'titleEs', 'titleEn', 'captionEs', 'captionEn',
+          'thumbUrl', 'fullUrl', 'videoUrl', 'posterUrl',
+          'sortOrder', 'published', 'updatedAt'
+        ]);
+      allow delete: if isAdmin() && isValidId(assetId);
+    }
+
+    match /properties/{propertyId} {
+      allow get: if isValidId(propertyId) && (existing().published == true || isAdmin());
+      allow list: if existing().published == true || isAdmin();
+      allow create: if isAdmin() && isValidId(propertyId) && isValidProperty(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isAdmin() && isValidId(propertyId) && isValidProperty(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'title', 'zone', 'category', 'priceUsd', 'altitude',
+          'sunarpStatus', 'summary', 'description', 'thumbUrl',
+          'images', 'published', 'displayOrder', 'updatedAt'
+        ]);
+      allow delete: if isAdmin() && isValidId(propertyId);
+    }
+
+    match /zones/{zoneId} {
+      allow get: if isValidId(zoneId) && (existing().published == true || isAdmin());
+      allow list: if existing().published == true || isAdmin();
+      allow create: if isAdmin() && isValidId(zoneId) && isValidZone(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isAdmin() && isValidId(zoneId) && isValidZone(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'name', 'altitude', 'microclimate', 'tagline',
+          'description', 'imageUrl', 'thumbUrl', 'videoUrl',
+          'posterUrl', 'published', 'updatedAt'
+        ]);
+      allow delete: if isAdmin() && isValidId(zoneId);
+    }
+
+    match /leads/{leadId} {
+      allow get: if isValidId(leadId) && (isAdmin() || (isVerifiedUser() && existing().ownerUid == request.auth.uid));
+      allow list: if isAdmin() || (isVerifiedUser() && existing().ownerUid == request.auth.uid);
+      allow create: if isVerifiedUser() && isValidId(leadId) && isValidLead(incoming())
+        && incoming().ownerUid == request.auth.uid
+        && incoming().status == 'new'
+        && incoming().createdAt == request.time;
+      allow update: if isAdmin() && isValidId(leadId) && isValidLead(incoming())
+        && incoming().ownerUid == existing().ownerUid
+        && incoming().createdAt == existing().createdAt
+        && existing().status != 'archived'
+        && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'notes']);
+      allow delete: if isAdmin() && isValidId(leadId);
+    }
+  }
+}
