@@ -76,6 +76,7 @@ export function MediaImage({ src, alt, className = '', fallbackTitle }: MediaIma
 interface AutoPlayVideoProps {
   src: string;
   poster?: string;
+  fallbackImage?: string;
   className?: string;
   ariaLabel?: string;
   ariaHidden?: boolean;
@@ -84,19 +85,24 @@ interface AutoPlayVideoProps {
 export function AutoPlayVideo({
   src,
   poster,
+  fallbackImage,
   className = '',
   ariaLabel,
   ariaHidden = false,
 }: AutoPlayVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
+    setHasError(false);
     const el = videoRef.current;
     if (!el) return;
 
     el.defaultMuted = true;
     el.muted = true;
     el.playsInline = true;
+    el.setAttribute('muted', '');
+    el.setAttribute('playsinline', '');
 
     const tryPlay = () => {
       if (el.paused) {
@@ -105,12 +111,38 @@ export function AutoPlayVideo({
     };
 
     tryPlay();
+    el.addEventListener('loadeddata', tryPlay);
     el.addEventListener('canplay', tryPlay);
 
+    let observer: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            tryPlay();
+          }
+        },
+        { threshold: 0.05 },
+      );
+      observer.observe(el);
+    }
+
     return () => {
+      el.removeEventListener('loadeddata', tryPlay);
       el.removeEventListener('canplay', tryPlay);
+      observer?.disconnect();
     };
   }, [src]);
+
+  if (hasError && fallbackImage) {
+    return (
+      <MediaImage
+        src={fallbackImage}
+        alt={ariaLabel ?? 'Vista aérea de Huayopata en La Convención'}
+        className={className}
+      />
+    );
+  }
 
   return (
     <video
@@ -123,9 +155,11 @@ export function AutoPlayVideo({
       loop
       playsInline
       preload="auto"
+      onError={() => setHasError(true)}
       aria-label={ariaLabel}
       aria-hidden={ariaHidden}
       className={className}
     />
   );
 }
+

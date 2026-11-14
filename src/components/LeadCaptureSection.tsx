@@ -1,17 +1,26 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle2, Loader2, MessageCircle, Send } from 'lucide-react';
-import type { PropertyItem } from '../data/valleyData';
+import { AGENTS, type AgentProfile, type PropertyItem } from '../data/valleyData';
 import { submitLeadInquiry } from '../services/api';
 import { RevealText } from './RevealText';
+import { UI_COPY, type LanguageCode } from '../i18n/translations';
 
 type LeadIntent = 'buy' | 'sell';
 
 interface LeadCaptureSectionProps {
+  language: LanguageCode;
   preselectedProperty: PropertyItem | null;
+  preselectedAgent?: AgentProfile | null;
 }
 
-export function LeadCaptureSection({ preselectedProperty }: LeadCaptureSectionProps) {
+export function LeadCaptureSection({
+  language,
+  preselectedProperty,
+  preselectedAgent = null,
+}: LeadCaptureSectionProps) {
+  const copy = UI_COPY[language].lead;
   const [intent, setIntent] = useState<LeadIntent>('buy');
+  const [selectedAgentId, setSelectedAgentId] = useState<'mariano' | 'jose'>('mariano');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -29,23 +38,36 @@ export function LeadCaptureSection({ preselectedProperty }: LeadCaptureSectionPr
     }
   }, [preselectedProperty]);
 
+  useEffect(() => {
+    if (preselectedAgent) {
+      setSelectedAgentId(preselectedAgent.id);
+      setReferenceCode(null);
+      setErrorMessage(null);
+      if (!interest.trim()) {
+        setInterest(`Coordinar asesoría con ${preselectedAgent.name} (${preselectedAgent.coverage})`);
+      }
+    }
+  }, [preselectedAgent]);
+
+  const activeAgent = AGENTS.find((a) => a.id === selectedAgentId) ?? AGENTS[0];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
 
     if (fullName.trim().length < 2) {
-      setErrorMessage('Ingresa tu nombre completo para asignarte un asesor.');
+      setErrorMessage(copy.errName);
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
-      setErrorMessage('Ingresa un correo electrónico válido.');
+      setErrorMessage(copy.errEmail);
       return;
     }
 
     if (phone.trim().replace(/\D/g, '').length < 7) {
-      setErrorMessage('Ingresa un número de teléfono o WhatsApp válido.');
+      setErrorMessage(copy.errPhone);
       return;
     }
 
@@ -56,80 +78,108 @@ export function LeadCaptureSection({ preselectedProperty }: LeadCaptureSectionPr
         fullName: fullName.trim(),
         email: email.trim(),
         phone: phone.trim(),
-        interest: interest.trim(),
+        interest:
+          interest.trim() ||
+          (language === 'en'
+            ? `Advisory requested with ${activeAgent.name}`
+            : `Asesoría solicitada con ${activeAgent.name}`),
       });
-      setReferenceCode(result.referenceCode ?? 'SA-REGISTRADO');
+      setReferenceCode(result.referenceCode ?? 'TR-REGISTRADO');
     } catch (err) {
-      setErrorMessage(
-        err instanceof Error ? err.message : 'No pudimos registrar la consulta. Intenta nuevamente.',
-      );
+      setErrorMessage(err instanceof Error ? err.message : copy.errGeneric);
     } finally {
       setSubmitting(false);
     }
   };
 
   const whatsappText = encodeURIComponent(
-    intent === 'buy'
-      ? `Hola, estoy interesado en recibir información para invertir o comprar en La Convención${
-          interest ? ` (${interest})` : ''
-        }${referenceCode ? ` [Ref: ${referenceCode}]` : ''}.`
-      : `Hola, deseo solicitar una tasación o comercialización para mi propiedad en La Convención${
-          interest ? ` (${interest})` : ''
-        }${referenceCode ? ` [Ref: ${referenceCode}]` : ''}.`,
+    language === 'en'
+      ? intent === 'buy'
+        ? `Hello ${activeAgent.name}, I am interested in receiving information to invest or buy in La Convención${
+            interest ? ` (${interest})` : ''
+          }${referenceCode ? ` [Ref: ${referenceCode}]` : ''}.`
+        : `Hello ${activeAgent.name}, I would like to request a valuation or listing advisory for my property in La Convención${
+            interest ? ` (${interest})` : ''
+          }${referenceCode ? ` [Ref: ${referenceCode}]` : ''}.`
+      : intent === 'buy'
+        ? `Hola ${activeAgent.name}, estoy interesado en recibir información para invertir o comprar en La Convención${
+            interest ? ` (${interest})` : ''
+          }${referenceCode ? ` [Ref: ${referenceCode}]` : ''}.`
+        : `Hola ${activeAgent.name}, deseo solicitar una tasación o comercialización para mi propiedad en La Convención${
+            interest ? ` (${interest})` : ''
+          }${referenceCode ? ` [Ref: ${referenceCode}]` : ''}.`,
   );
 
   return (
     <section
       id="contacto"
-      className="scroll-mt-20 bg-[#F1EFEA] text-[#18241E] py-20 md:py-28 px-6 md:px-10"
+      className="scroll-mt-20 bg-[#F3EFE6] text-[#0E2F1E] py-20 md:py-28 px-6 md:px-10"
     >
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
         <div className="lg:col-span-5 space-y-6">
           <div>
-            <p className="text-sm font-medium text-[#2A4736] mb-2">
-              Atención personalizada
+            <p className="text-sm font-medium text-[#9A783A] mb-2">
+              {copy.eyebrow}
             </p>
             <RevealText>
-              <h2 className="font-serif text-[clamp(2rem,3.6vw,3rem)] font-normal leading-[1.12] tracking-tight text-[#18241E]">
-                Coordina una visita técnica o tasación
+              <h2 className="font-serif text-[clamp(2rem,3.6vw,3rem)] font-normal leading-[1.12] tracking-tight text-[#0E2F1E]">
+                {copy.heading}
               </h2>
             </RevealText>
           </div>
 
-          <p className="text-sm md:text-[15px] leading-relaxed text-[#18241E]/75">
-            Ya sea que busques adquirir una finca cafetalera, un terreno con frente fluvial o
-            poner en valor una propiedad familiar en La Convención, nuestro equipo local te atiende
-            en Quillabamba y Cusco.
+          <p className="text-sm md:text-[15px] leading-relaxed text-[#2D3332]/80">
+            {copy.subtitle}
           </p>
 
-          <div className="pt-4 border-t border-[#18241E]/10 space-y-3 text-sm text-[#18241E]/80">
+          <div className="pt-4 border-t border-[#0E2F1E]/10 space-y-2.5 text-sm text-[#2D3332]/85">
             <p>
-              <span className="font-medium text-[#18241E]">Oficina Quillabamba:</span> Jr. Espinar
-              248, La Convención, Cusco
+              <span className="font-medium text-[#0E2F1E]">{copy.officeLabel}</span>{' '}
+              {copy.officeValue}
             </p>
             <p>
-              <span className="font-medium text-[#18241E]">Horario:</span> Lunes a sábado, 08:30 –
-              18:00 h
+              <span className="font-medium text-[#0E2F1E]">{copy.hoursLabel}</span>{' '}
+              {copy.hoursValue}
             </p>
           </div>
 
-          <a
-            href={`https://wa.me/51984000000?text=${whatsappText}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 rounded-xl bg-[#2A4736] hover:bg-[#18241E] text-[#FAF9F6] text-sm font-medium px-6 py-3.5 transition-colors"
-          >
-            <MessageCircle className="w-4 h-4" />
-            <span>Escribir por WhatsApp Business</span>
-          </a>
+          <div className="space-y-2.5">
+            <p className="text-xs font-medium text-[#2D3332]/70">
+              {copy.whatsappDirect}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-2.5">
+              {AGENTS.map((agent) => {
+                const isActive = agent.id === selectedAgentId;
+                return (
+                  <a
+                    key={agent.id}
+                    href={`https://wa.me/${agent.whatsappNumber}?text=${whatsappText}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setSelectedAgentId(agent.id)}
+                    className={`flex-1 inline-flex items-center justify-center gap-2 rounded-xl text-xs font-medium px-4 py-3 transition-colors ${
+                      isActive
+                        ? 'bg-[#0E2F1E] hover:bg-[#1B4730] text-[#FAF8F3]'
+                        : 'bg-white hover:bg-[#FAF8F3] text-[#0E2F1E] border border-[#0E2F1E]/15'
+                    }`}
+                  >
+                    <MessageCircle className="w-4 h-4 shrink-0" />
+                    <span>
+                      {agent.name} · {agent.phoneDisplay}
+                    </span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         <div className="lg:col-span-7">
-          <div className="rounded-2xl bg-white border border-[#18241E]/10 p-6 sm:p-8 md:p-10 shadow-sm">
+          <div className="rounded-2xl bg-white border border-[#0E2F1E]/10 p-6 sm:p-8 md:p-10 shadow-sm">
             <div
               role="tablist"
-              aria-label="Tipo de solicitud"
-              className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-1.5 rounded-xl bg-[#F1EFEA] mb-8"
+              aria-label={copy.tabAria}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-1.5 rounded-xl bg-[#F3EFE6] mb-8"
             >
               <button
                 type="button"
@@ -142,11 +192,11 @@ export function LeadCaptureSection({ preselectedProperty }: LeadCaptureSectionPr
                 }}
                 className={`py-3 px-4 rounded-lg text-sm font-medium transition-all cursor-pointer ${
                   intent === 'buy'
-                    ? 'bg-white text-[#18241E] shadow-sm'
-                    : 'text-[#18241E]/70 hover:text-[#18241E]'
+                    ? 'bg-white text-[#0E2F1E] shadow-sm'
+                    : 'text-[#2D3332]/75 hover:text-[#0E2F1E]'
                 }`}
               >
-                Busco invertir o comprar
+                {copy.tabBuy}
               </button>
               <button
                 type="button"
@@ -159,38 +209,37 @@ export function LeadCaptureSection({ preselectedProperty }: LeadCaptureSectionPr
                 }}
                 className={`py-3 px-4 rounded-lg text-sm font-medium transition-all cursor-pointer ${
                   intent === 'sell'
-                    ? 'bg-white text-[#18241E] shadow-sm'
-                    : 'text-[#18241E]/70 hover:text-[#18241E]'
+                    ? 'bg-white text-[#0E2F1E] shadow-sm'
+                    : 'text-[#2D3332]/75 hover:text-[#0E2F1E]'
                 }`}
               >
-                Quiero vender o tasar
+                {copy.tabSell}
               </button>
             </div>
 
             {referenceCode ? (
               <div className="py-10 text-center space-y-4">
-                <CheckCircle2 className="w-10 h-10 text-[#2A4736] mx-auto" />
+                <CheckCircle2 className="w-10 h-10 text-[#1B4730] mx-auto" />
                 <div className="space-y-1">
-                  <p className="text-xs font-medium text-[#8C6239] tabular-nums">
-                    Código de registro: {referenceCode}
+                  <p className="text-xs font-medium text-[#9A783A] tabular-nums">
+                    {copy.refCodeLabel} {referenceCode}
                   </p>
-                  <h3 className="font-serif text-2xl font-normal text-[#18241E]">
-                    Solicitud recibida correctamente
+                  <h3 className="font-serif text-2xl font-normal text-[#0E2F1E]">
+                    {copy.successTitle}
                   </h3>
                 </div>
-                <p className="text-sm text-[#18241E]/75 max-w-md mx-auto leading-relaxed">
-                  Gracias, {fullName}. Un asesor senior de Selva Alta Realty en Quillabamba se
-                  comunicará contigo en menos de 24 horas hábiles.
+                <p className="text-sm text-[#2D3332]/80 max-w-md mx-auto leading-relaxed">
+                  {copy.successBody(fullName, activeAgent.name, activeAgent.phoneDisplay)}
                 </p>
                 <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
                   <a
-                    href={`https://wa.me/51984000000?text=${whatsappText}`}
+                    href={`https://wa.me/${activeAgent.whatsappNumber}?text=${whatsappText}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-xl bg-[#2A4736] text-[#FAF9F6] text-xs font-medium px-4 py-2.5 hover:bg-[#18241E] transition-colors"
+                    className="inline-flex items-center gap-2 rounded-xl bg-[#0E2F1E] text-[#FAF8F3] text-xs font-medium px-4 py-2.5 hover:bg-[#1B4730] transition-colors"
                   >
                     <MessageCircle className="w-3.5 h-3.5" />
-                    <span>Continuar en WhatsApp</span>
+                    <span>{copy.continueWhatsapp(activeAgent.name)}</span>
                   </a>
                   <button
                     type="button"
@@ -201,9 +250,9 @@ export function LeadCaptureSection({ preselectedProperty }: LeadCaptureSectionPr
                       setPhone('');
                       setInterest('');
                     }}
-                    className="text-sm font-medium text-[#2A4736] underline underline-offset-4 cursor-pointer"
+                    className="text-sm font-medium text-[#1B4730] underline underline-offset-4 cursor-pointer"
                   >
-                    Enviar otra consulta
+                    {copy.sendAnother}
                   </button>
                 </div>
               </div>
@@ -213,34 +262,34 @@ export function LeadCaptureSection({ preselectedProperty }: LeadCaptureSectionPr
                   <div>
                     <label
                       htmlFor="lead-name"
-                      className="block text-xs font-medium text-[#18241E]/75 mb-1.5"
+                      className="block text-xs font-medium text-[#2D3332]/80 mb-1.5"
                     >
-                      Nombre completo
+                      {copy.nameLabel}
                     </label>
                     <input
                       id="lead-name"
                       type="text"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      placeholder="Ej. Carlos Mendoza"
-                      className="w-full rounded-xl border border-[#18241E]/18 bg-[#FAF9F6] px-4 py-3 text-sm text-[#18241E] placeholder:text-[#18241E]/40 focus:border-[#2A4736] focus:bg-white focus:outline-none"
+                      placeholder={copy.namePlaceholder}
+                      className="w-full rounded-xl border border-[#0E2F1E]/18 bg-[#FAF8F3] px-4 py-3 text-sm text-[#0E2F1E] placeholder:text-[#2D3332]/40 focus:border-[#0E2F1E] focus:bg-white focus:outline-none"
                     />
                   </div>
 
                   <div>
                     <label
                       htmlFor="lead-phone"
-                      className="block text-xs font-medium text-[#18241E]/75 mb-1.5"
+                      className="block text-xs font-medium text-[#2D3332]/80 mb-1.5"
                     >
-                      Teléfono / WhatsApp
+                      {copy.phoneLabel}
                     </label>
                     <input
                       id="lead-phone"
                       type="tel"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      placeholder="+51 984 000 000"
-                      className="w-full rounded-xl border border-[#18241E]/18 bg-[#FAF9F6] px-4 py-3 text-sm text-[#18241E] placeholder:text-[#18241E]/40 focus:border-[#2A4736] focus:bg-white focus:outline-none"
+                      placeholder="+51 950 155 945"
+                      className="w-full rounded-xl border border-[#0E2F1E]/18 bg-[#FAF8F3] px-4 py-3 text-sm text-[#0E2F1E] placeholder:text-[#2D3332]/40 focus:border-[#0E2F1E] focus:bg-white focus:outline-none"
                     />
                   </div>
                 </div>
@@ -248,28 +297,26 @@ export function LeadCaptureSection({ preselectedProperty }: LeadCaptureSectionPr
                 <div>
                   <label
                     htmlFor="lead-email"
-                    className="block text-xs font-medium text-[#18241E]/75 mb-1.5"
+                    className="block text-xs font-medium text-[#2D3332]/80 mb-1.5"
                   >
-                    Correo electrónico
+                    {copy.emailLabel}
                   </label>
                   <input
                     id="lead-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="nombre@empresa.com"
-                    className="w-full rounded-xl border border-[#18241E]/18 bg-[#FAF9F6] px-4 py-3 text-sm text-[#18241E] placeholder:text-[#18241E]/40 focus:border-[#2A4736] focus:bg-white focus:outline-none"
+                    placeholder={copy.emailPlaceholder}
+                    className="w-full rounded-xl border border-[#0E2F1E]/18 bg-[#FAF8F3] px-4 py-3 text-sm text-[#0E2F1E] placeholder:text-[#2D3332]/40 focus:border-[#0E2F1E] focus:bg-white focus:outline-none"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="lead-interest"
-                    className="block text-xs font-medium text-[#18241E]/75 mb-1.5"
+                    className="block text-xs font-medium text-[#2D3332]/80 mb-1.5"
                   >
-                    {intent === 'buy'
-                      ? 'Zona, presupuesto o propiedad de interés'
-                      : 'Ubicación, extensión (Ha o m²) y situación registral'}
+                    {intent === 'buy' ? copy.interestBuyLabel : copy.interestSellLabel}
                   </label>
                   <input
                     id="lead-interest"
@@ -278,10 +325,10 @@ export function LeadCaptureSection({ preselectedProperty }: LeadCaptureSectionPr
                     onChange={(e) => setInterest(e.target.value)}
                     placeholder={
                       intent === 'buy'
-                        ? 'Ej. Finca productiva en Huayopata desde 20 Ha'
-                        : 'Ej. Predio de 15 Ha en Maranura inscrito en SUNARP'
+                        ? copy.interestBuyPlaceholder
+                        : copy.interestSellPlaceholder
                     }
-                    className="w-full rounded-xl border border-[#18241E]/18 bg-[#FAF9F6] px-4 py-3 text-sm text-[#18241E] placeholder:text-[#18241E]/40 focus:border-[#2A4736] focus:bg-white focus:outline-none"
+                    className="w-full rounded-xl border border-[#0E2F1E]/18 bg-[#FAF8F3] px-4 py-3 text-sm text-[#0E2F1E] placeholder:text-[#2D3332]/40 focus:border-[#0E2F1E] focus:bg-white focus:outline-none"
                   />
                 </div>
 
@@ -294,20 +341,18 @@ export function LeadCaptureSection({ preselectedProperty }: LeadCaptureSectionPr
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#18241E] hover:bg-[#2A4736] disabled:opacity-70 text-[#FAF9F6] text-sm font-medium px-6 py-3.5 transition-colors cursor-pointer"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#0E2F1E] hover:bg-[#1B4730] disabled:opacity-70 text-[#FAF8F3] text-sm font-medium px-6 py-3.5 transition-colors cursor-pointer"
                 >
                   {submitting ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Registrando consulta...</span>
+                      <span>{copy.submittingBtn}</span>
                     </>
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
                       <span>
-                        {intent === 'buy'
-                          ? 'Solicitar dossier privado'
-                          : 'Solicitar evaluación de tasación'}
+                        {intent === 'buy' ? copy.submitBuyBtn : copy.submitSellBtn}
                       </span>
                     </>
                   )}

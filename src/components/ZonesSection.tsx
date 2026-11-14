@@ -12,18 +12,22 @@ import {
 import { VALLEY_ZONES, type ZoneId } from '../data/valleyData';
 import { fetchZoneWeather, type WeatherData } from '../services/api';
 import { AutoPlayVideo, MediaImage, ORGANIC_EASE, RevealText } from './RevealText';
+import { getLocalizedZone, UI_COPY, type LanguageCode } from '../i18n/translations';
 
 interface ZonesSectionProps {
+  language: LanguageCode;
   onFilterByZone: (zone: ZoneId) => void;
 }
 
-export function ZonesSection({ onFilterByZone }: ZonesSectionProps) {
+export function ZonesSection({ language, onFilterByZone }: ZonesSectionProps) {
   const [activeZoneId, setActiveZoneId] = useState<ZoneId>('Huayopata');
   const [viewStillPhoto, setViewStillPhoto] = useState(false);
   const [weatherByZone, setWeatherByZone] = useState<Partial<Record<ZoneId, WeatherData>>>({});
   const prefersReducedMotion = useReducedMotion();
+  const copy = UI_COPY[language].zones;
 
-  const activeZone = VALLEY_ZONES.find((z) => z.id === activeZoneId) ?? VALLEY_ZONES[0];
+  const localizedZones = VALLEY_ZONES.map((z) => getLocalizedZone(z, language));
+  const activeZone = localizedZones.find((z) => z.id === activeZoneId) ?? localizedZones[0];
   const liveWeather = weatherByZone[activeZone.id];
 
   useEffect(() => {
@@ -48,33 +52,32 @@ export function ZonesSection({ onFilterByZone }: ZonesSectionProps) {
   return (
     <section
       id="zonas"
-      className="scroll-mt-20 bg-[#F1EFEA] text-[#18241E] pt-20 md:pt-28 overflow-hidden"
+      className="scroll-mt-20 bg-[#F3EFE6] text-[#0E2F1E] pt-20 md:pt-28 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-10">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
           <div className="max-w-2xl">
-            <p className="text-sm font-medium text-[#2A4736] mb-2">
-              Microclimas y altitud del valle
+            <p className="text-sm font-medium text-[#9A783A] mb-2">
+              {copy.eyebrow}
             </p>
             <RevealText>
-              <h2 className="font-serif text-[clamp(2rem,3.6vw,3rem)] font-normal leading-[1.12] tracking-tight text-[#18241E]">
-                Cinco pisos ecológicos en La Convención
+              <h2 className="font-serif text-[clamp(2rem,3.6vw,3rem)] font-normal leading-[1.12] tracking-tight text-[#0E2F1E]">
+                {copy.heading}
               </h2>
             </RevealText>
           </div>
 
-          <p className="text-sm md:text-[15px] text-[#18241E]/70 max-w-md leading-relaxed">
-            Desde los bosques de neblina y cafetales de altura en Huayopata hasta las terrazas
-            soleadas del Alto Urubamba.
+          <p className="text-sm md:text-[15px] text-[#2D3332]/75 max-w-md leading-relaxed">
+            {copy.subtitle}
           </p>
         </div>
 
         <div
           role="tablist"
-          aria-label="Zonas de La Convención"
+          aria-label={copy.tabsAria}
           className="flex flex-wrap items-center gap-2 pb-8"
         >
-          {VALLEY_ZONES.map((zone) => {
+          {localizedZones.map((zone) => {
             const isActive = zone.id === activeZone.id;
             return (
               <button
@@ -88,8 +91,8 @@ export function ZonesSection({ onFilterByZone }: ZonesSectionProps) {
                 }}
                 className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0 cursor-pointer ${
                   isActive
-                    ? 'bg-[#18241E] text-[#FAF9F6] shadow-sm'
-                    : 'bg-[#FAF9F6] text-[#18241E]/75 hover:bg-white hover:text-[#18241E] border border-[#18241E]/10'
+                    ? 'bg-[#0E2F1E] text-[#FAF8F3] shadow-sm'
+                    : 'bg-[#FAF8F3] text-[#2D3332]/80 hover:bg-white hover:text-[#0E2F1E] border border-[#0E2F1E]/10'
                 }`}
               >
                 <span className="text-xs opacity-60 mr-2 tabular-nums">{zone.indexLabel}</span>
@@ -101,7 +104,7 @@ export function ZonesSection({ onFilterByZone }: ZonesSectionProps) {
       </div>
 
       {/* Edge-to-edge full-width unboxed aerial video stage */}
-      <div className="relative w-full h-[56vh] min-h-[440px] max-h-[680px] bg-[#101A14]">
+      <div className="relative w-full h-[56vh] min-h-[440px] max-h-[680px] bg-[#0E2F1E]">
         <AnimatePresence mode="wait">
           {viewStillPhoto ? (
             <motion.div
@@ -130,6 +133,7 @@ export function ZonesSection({ onFilterByZone }: ZonesSectionProps) {
             >
               <AutoPlayVideo
                 src={activeZone.video}
+                fallbackImage={activeZone.image}
                 ariaLabel={`Sobrevolando ${activeZone.name} en La Convención, Cusco`}
                 className={`w-full h-full object-cover ${activeZone.videoScaleOrigin}`}
               />
@@ -173,30 +177,30 @@ export function ZonesSection({ onFilterByZone }: ZonesSectionProps) {
             {viewStillPhoto ? (
               <>
                 <Video className="w-3.5 h-3.5" />
-                <span>Reproducir vista aérea</span>
+                <span>{copy.playAerial}</span>
               </>
             ) : (
               <>
                 <ImageIcon className="w-3.5 h-3.5" />
-                <span>Ver fotografía fija</span>
+                <span>{copy.viewPhoto}</span>
               </>
             )}
           </button>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto h-full px-6 md:px-10 pb-10 md:pb-12 flex items-end">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-end text-[#FAF9F6]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-end text-[#FAF8F3]">
             <div className="lg:col-span-7">
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium text-[#FAF9F6]/85 mb-3">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium text-[#FAF8F3]/85 mb-3">
                 <span className="inline-flex items-center gap-1.5">
-                  <Mountain className="w-3.5 h-3.5 text-[#E4CFAF]" />
+                  <Mountain className="w-3.5 h-3.5 text-[#E3C992]" />
                   {activeZone.altitude}
                 </span>
                 <span aria-hidden="true" className="text-white/35">
                   ·
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Compass className="w-3.5 h-3.5 text-[#E4CFAF]" />
+                  <Compass className="w-3.5 h-3.5 text-[#E3C992]" />
                   {activeZone.driveTime}
                 </span>
                 <span aria-hidden="true" className="text-white/35">
@@ -205,11 +209,11 @@ export function ZonesSection({ onFilterByZone }: ZonesSectionProps) {
                 <span>{activeZone.microclimate}</span>
               </div>
 
-              <h3 className="font-serif text-3xl md:text-5xl font-normal tracking-tight text-[#FAF9F6]">
+              <h3 className="font-serif text-3xl md:text-5xl font-normal tracking-tight text-[#FAF8F3]">
                 {activeZone.name}
               </h3>
 
-              <p className="mt-3 text-sm md:text-base text-[#FAF9F6]/90 max-w-2xl leading-relaxed">
+              <p className="mt-3 text-sm md:text-base text-[#FAF8F3]/90 max-w-2xl leading-relaxed">
                 {activeZone.description}
               </p>
             </div>
@@ -219,7 +223,7 @@ export function ZonesSection({ onFilterByZone }: ZonesSectionProps) {
                 {activeZone.highlights.map((item) => (
                   <li
                     key={item}
-                    className="text-xs font-medium text-[#FAF9F6]/90 bg-[#101A14]/65 backdrop-blur-sm border border-white/15 rounded-lg px-3 py-1.5"
+                    className="text-xs font-medium text-[#FAF8F3]/90 bg-[#0E2F1E]/75 backdrop-blur-sm border border-[#C8A562]/30 rounded-lg px-3 py-1.5"
                   >
                     {item}
                   </li>
@@ -229,9 +233,11 @@ export function ZonesSection({ onFilterByZone }: ZonesSectionProps) {
               <button
                 type="button"
                 onClick={() => onFilterByZone(activeZone.id)}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#FAF9F6] hover:bg-[#F1EFEA] text-[#18241E] text-sm font-medium px-6 py-3.5 transition-colors cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#FAF8F3] hover:bg-[#F3EFE6] text-[#0E2F1E] text-sm font-medium px-6 py-3.5 transition-colors cursor-pointer"
               >
-                <span>Ver propiedades en {activeZone.name}</span>
+                <span>
+                  {copy.ctaPrefix} {activeZone.name}
+                </span>
                 <ArrowUpRight className="w-4 h-4" />
               </button>
             </div>

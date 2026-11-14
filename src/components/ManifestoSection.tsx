@@ -3,31 +3,16 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Maximize2, X } from 'lucide-react';
 import { HUAYOPATA_VALLEY_VIDEO, MEDIA_ASSETS } from '../data/valleyData';
 import { AutoPlayVideo, MediaImage, ORGANIC_EASE, RevealText } from './RevealText';
+import { UI_COPY, type LanguageCode } from '../i18n/translations';
 
-const PILLARS = [
-  {
-    number: '01',
-    title: 'Levantamiento topográfico RTK',
-    description:
-      'Delimitamos cada vértice, quebrada, trocha carrozable y naciente de agua con vuelo fotogramétrico de alta precisión antes de cualquier oferta.',
-  },
-  {
-    number: '02',
-    title: 'Auditoría registral en SUNARP',
-    description:
-      'Revisamos tracto sucesivo, certificados negativos de superposición, cargas y servidumbres de paso para garantizar transferencia notarial limpia.',
-  },
-  {
-    number: '03',
-    title: 'Vocación productiva y arquitectónica',
-    description:
-      'Evaluamos altitud, radiación solar, calidad de suelo cafetalero/cacaotero y factibilidad constructiva para inversión patrimonial a largo plazo.',
-  },
-];
+interface ManifestoSectionProps {
+  language: LanguageCode;
+}
 
-export function ManifestoSection() {
+export function ManifestoSection({ language }: ManifestoSectionProps) {
   const [theaterOpen, setTheaterOpen] = useState(false);
   const prefersReducedMotion = useReducedMotion();
+  const copy = UI_COPY[language].manifesto;
 
   useEffect(() => {
     if (!theaterOpen) return;
@@ -46,35 +31,33 @@ export function ManifestoSection() {
   return (
     <section
       id="manifiesto"
-      className="scroll-mt-20 bg-[#FAF9F6] text-[#18241E] pt-20 md:pt-28"
+      className="scroll-mt-20 bg-[#FAF8F3] text-[#0E2F1E] pt-20 md:pt-28"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-10 pb-14 md:pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-14">
           <div className="lg:col-span-7 space-y-5">
             <div>
-              <p className="text-sm font-medium text-[#2A4736] mb-2">
-                Metodología de campo y respaldo legal
+              <p className="text-sm font-medium text-[#9A783A] mb-2">
+                {copy.eyebrow}
               </p>
               <RevealText>
-                <h2 className="font-serif text-[clamp(2rem,3.6vw,3rem)] font-normal leading-[1.12] tracking-tight text-[#18241E]">
-                  Inversión territorial en selva alta con rigor técnico
+                <h2 className="font-serif text-[clamp(2rem,3.6vw,3rem)] font-normal leading-[1.12] tracking-tight text-[#0E2F1E]">
+                  {copy.heading}
                 </h2>
               </RevealText>
             </div>
 
-            <p className="text-sm md:text-[15px] leading-relaxed text-[#18241E]/75 max-w-xl">
-              Adquirir una finca productiva o una residencia en La Convención exige verificar linderos
-              reales sobre el terreno con levantamiento aéreo en campo y su correlato jurídico en
-              Registros Públicos.
+            <p className="text-sm md:text-[15px] leading-relaxed text-[#2D3332]/80 max-w-xl">
+              {copy.subtitle}
             </p>
           </div>
 
           <div className="lg:col-span-5">
-            <div className="rounded-2xl overflow-hidden bg-[#F1EFEA] border border-[#18241E]/10 aspect-[16/10]">
+            <div className="rounded-2xl overflow-hidden bg-[#F3EFE6] border border-[#0E2F1E]/10 aspect-[16/10]">
               <MediaImage
                 src={MEDIA_ASSETS.huayopataCampo}
-                alt="Inspección aerofotogramétrica de campo en trocha de Huayopata"
-                fallbackTitle="Inspección de campo en Huayopata"
+                alt="Recorrido de campo en camino rural de Huayopata"
+                fallbackTitle="Recorrido de campo en Huayopata"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -82,23 +65,23 @@ export function ManifestoSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-          {PILLARS.map((pillar, index) => (
+          {copy.pillars.map((pillar, index) => (
             <motion.div
               key={pillar.number}
               initial={prefersReducedMotion ? undefined : { opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.65, delay: index * 0.08, ease: ORGANIC_EASE }}
-              className="rounded-2xl bg-[#F1EFEA] p-7 md:p-8 border border-[#18241E]/8 flex flex-col justify-between gap-4"
+              className="rounded-2xl bg-[#F3EFE6] p-7 md:p-8 border border-[#0E2F1E]/10 flex flex-col justify-between gap-4"
             >
-              <span className="font-serif text-3xl font-normal text-[#8C6239] tabular-nums">
+              <span className="font-serif text-3xl font-normal text-[#9A783A] tabular-nums">
                 {pillar.number}
               </span>
               <div>
-                <h3 className="font-serif text-xl md:text-2xl font-normal text-[#18241E] mb-2.5">
+                <h3 className="font-serif text-xl md:text-2xl font-normal text-[#0E2F1E] mb-2.5">
                   {pillar.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-[#18241E]/75">
+                <p className="text-sm leading-relaxed text-[#2D3332]/80">
                   {pillar.description}
                 </p>
               </div>
@@ -108,35 +91,36 @@ export function ManifestoSection() {
       </div>
 
       {/* Unboxed edge-to-edge full-width autoplaying aerial video band */}
-      <div className="relative w-full h-[54vh] min-h-[380px] max-h-[640px] bg-[#101A14]">
+      <div className="relative w-full h-[54vh] min-h-[380px] max-h-[640px] bg-[#0E2F1E]">
         <AutoPlayVideo
           src={HUAYOPATA_VALLEY_VIDEO}
-          ariaLabel="Recorrido aéreo continuo por el valle de Huayopata y La Convención"
+          fallbackImage={MEDIA_ASSETS.huayopataCordillera}
+          ariaLabel={copy.expandedAria}
           className="w-full h-full object-cover"
         />
 
         <div
-          className="absolute inset-0 bg-gradient-to-t from-[#0D1611]/75 via-transparent to-[#0D1611]/25 pointer-events-none"
+          className="absolute inset-0 bg-gradient-to-t from-[#091F14]/80 via-transparent to-[#091F14]/30 pointer-events-none"
           aria-hidden="true"
         />
 
-        <div className="absolute inset-x-0 bottom-0 z-10 max-w-7xl mx-auto px-6 md:px-10 py-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4 text-[#FAF9F6]">
+        <div className="absolute inset-x-0 bottom-0 z-10 max-w-7xl mx-auto px-6 md:px-10 py-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4 text-[#FAF8F3]">
           <div className="max-w-xl">
-            <p className="text-xs font-medium text-[#E4CFAF] mb-1">
-              Inspección aérea · Huayopata y Alto Urubamba
+            <p className="text-xs font-medium text-[#E3C992] mb-1">
+              {copy.videoEyebrow}
             </p>
-            <p className="font-serif text-xl md:text-2xl font-normal text-[#FAF9F6]">
-              Verificación directa de acceso vial, topografía y nacientes de agua
+            <p className="font-serif text-xl md:text-2xl font-normal text-[#FAF8F3]">
+              {copy.videoCaption}
             </p>
           </div>
 
           <button
             type="button"
             onClick={() => setTheaterOpen(true)}
-            className="inline-flex items-center gap-2 rounded-full bg-[#FAF9F6]/90 hover:bg-[#FAF9F6] text-[#18241E] text-xs font-medium px-4 py-2.5 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-full bg-[#FAF8F3]/95 hover:bg-[#FAF8F3] text-[#0E2F1E] text-xs font-medium px-4 py-2.5 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
           >
             <Maximize2 className="w-3.5 h-3.5" />
-            <span>Expandir vista</span>
+            <span>{copy.expandView}</span>
           </button>
         </div>
       </div>
@@ -151,12 +135,12 @@ export function ManifestoSection() {
             className="fixed inset-0 z-50 bg-[#0D1611]/95 backdrop-blur-md flex items-center justify-center p-4 md:p-8"
             role="dialog"
             aria-modal="true"
-            aria-label="Vista aérea ampliada de La Convención"
+            aria-label={copy.expandedAria}
           >
             <button
               type="button"
               onClick={() => setTheaterOpen(false)}
-              aria-label="Cerrar vista ampliada"
+              aria-label={copy.closeExpanded}
               className="absolute top-5 right-5 z-20 inline-flex items-center justify-center w-11 h-11 rounded-full bg-white text-[#18241E] hover:bg-[#F1EFEA] transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />

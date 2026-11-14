@@ -93,6 +93,56 @@ export interface TestimonialItem {
   outcome: string;
 }
 
+export interface AgentProfile {
+  id: 'mariano' | 'jose';
+  name: string;
+  fullName: string;
+  role: string;
+  phoneDisplay: string;
+  phoneHref: string;
+  whatsappNumber: string;
+  coverage: string;
+  bio: string;
+  specialties: string[];
+  photo?: string;
+}
+
+export const AGENTS: AgentProfile[] = [
+  {
+    id: 'mariano',
+    name: 'Mariano',
+    fullName: 'Mariano · Asesor de Campo y Dron',
+    role: 'Visitas en campo y tomas aéreas con dron',
+    phoneDisplay: '+51 950 155 945',
+    phoneHref: '+51950155945',
+    whatsappNumber: '51950155945',
+    coverage: 'Huayopata · Santa Teresa · Maranura',
+    bio: 'Encargado de los recorridos en terreno y tomas con dron en Huayopata y alrededores. Te acompaña directamente a revisar trochas de acceso, linderos, fuentes de agua y zonas cultivables.',
+    specialties: [
+      'Visitas guiadas a fincas y terrenos',
+      'Tomas aéreas con dron y revisión de linderos',
+      'Verificación de accesos y fuentes de agua',
+    ],
+    photo: huayopata13Campo,
+  },
+  {
+    id: 'jose',
+    name: 'José',
+    fullName: 'José · Asesor Senior y Trámites SUNARP',
+    role: 'Asesor inmobiliario y especialista registral',
+    phoneDisplay: '+51 982 908 264',
+    phoneHref: '+51982908264',
+    whatsappNumber: '51982908264',
+    coverage: 'Quillabamba · Echarati · La Convención',
+    bio: 'Responsable de la asesoría comercial, referencia de tasación y revisión de partidas en SUNARP. Acompaña cada operación desde la primera consulta hasta la firma en notaría en Quillabamba o Cusco.',
+    specialties: [
+      'Revisión de partidas y certificados en SUNARP',
+      'Orientación en precio de mercado y negociación',
+      'Coordinación notarial en Quillabamba y Cusco',
+    ],
+  },
+];
+
 export const HUAYOPATA_AERIAL_VIDEO = '/assets/videos/huayopata_hero.mp4';
 export const HUAYOPATA_VALLEY_VIDEO = '/assets/videos/huayopata_valle.mp4';
 
@@ -107,44 +157,44 @@ export const HUAYOPATA_REEL_PHOTOS: FilmReelPhoto[] = [
   {
     id: 'reel-07',
     src: huayopata07Panoramica,
-    title: 'Ladera Forestal & Trocha · Huayopata',
-    caption: '1,780 m s. n. m. · Levantamiento aéreo integral',
+    title: 'Ladera forestal y acceso · Huayopata',
+    caption: '1,780 m s. n. m. · Vista aérea del sector',
   },
   {
     id: 'reel-03',
     src: huayopata03Loma,
-    title: 'Macizo de Pinos y Refugio · Huayopata',
-    caption: 'Bosque consolidado con acceso vehicular interno',
+    title: 'Bosque de pinos y cabaña · Huayopata',
+    caption: 'Arboleda madura con ingreso vehicular',
   },
   {
     id: 'reel-05',
     src: huayopata05Trocha,
-    title: 'Acceso Afirmado en Cumbre · Huayopata',
-    caption: 'Conectividad hacia terrazas cafetaleras',
+    title: 'Camino afirmado hacia la cumbre',
+    caption: 'Acceso directo a terrazas de cultivo',
   },
   {
     id: 'reel-06',
     src: huayopata06Bosque,
-    title: 'Reserva Boscosa & Quebrada · Huayopata',
-    caption: 'Nacientes de agua permanentes en altura',
+    title: 'Reserva de bosque y quebrada',
+    caption: 'Agua de manantial durante todo el año',
   },
   {
     id: 'reel-08',
     src: huayopata08Pueblo,
-    title: 'Corredor Urbano de Huayopata',
-    caption: 'Vista hacia el valle y río principal',
+    title: 'Centro poblado de Huayopata',
+    caption: 'Panorámica hacia el valle principal',
   },
   {
     id: 'reel-09',
     src: huayopata09Cordillera,
-    title: 'Horizonte de Selva Alta · La Convención',
-    caption: 'Bosque de neblina y pisos ecológicos',
+    title: 'Cordillera y selva alta',
+    caption: 'Laderas verdes en La Convención',
   },
   {
     id: 'reel-13',
     src: huayopata13Campo,
-    title: 'Inspección Fotogramétrica en Campo',
-    caption: 'Verificación técnica directa sobre lindero',
+    title: 'Recorrido de verificación en campo',
+    caption: 'Revisión directa de linderos con dron',
   },
 ];
 
@@ -168,11 +218,11 @@ export const VALLEY_ZONES: ValleyZone[] = [
     indexLabel: '01',
     name: 'Huayopata',
     altitude: '1,550 – 2,150 m s. n. m.',
-    microclimate: 'Bosque de neblina, té y café Geisha',
-    tagline: 'Laderas de neblina matinal, plantaciones de té de altura y bosques privados.',
+    microclimate: 'Bosque de neblina, té y café',
+    tagline: 'Laderas verdes, plantaciones de té y fincas de café en altura.',
     description:
-      'Puerta verde de La Convención descendiendo desde el Abra Málaga. Sus suelos ricos en materia orgánica y manantiales permanentes permiten combinar fincas cafetaleras de especialidad con refugios arquitectónicos privados.',
-    highlights: ['Café Geisha >87 pts SCA', 'Manantiales propios todo el año', 'A 3h 15m de Cusco'],
+      'Entrada verde a La Convención bajando desde el Abra Málaga. Sus tierras húmedas y manantiales propios la hacen ideal para café de altura, té y casas de campo tranquilas.',
+    highlights: ['Café de altura y té', 'Manantiales todo el año', 'A 3h 15m de Cusco'],
     image: MEDIA_ASSETS.huayopataAerial,
     video: HUAYOPATA_AERIAL_VIDEO,
     videoScaleOrigin: 'origin-center',
@@ -184,11 +234,11 @@ export const VALLEY_ZONES: ValleyZone[] = [
     indexLabel: '02',
     name: 'Quillabamba',
     altitude: '1,050 m s. n. m.',
-    microclimate: 'Centro urbano y villas ribereñas',
-    tagline: 'Residencias contemporáneas, clima cálido y conectividad sobre el Vilcanota.',
+    microclimate: 'Zona urbana y casas de campo',
+    tagline: 'Viviendas amplias, clima cálido y acceso asfaltado cerca de la ciudad.',
     description:
-      'Corazón residencial y financiero de La Convención con clima cálido seco de 24 °C promedio anual. Concentra villas familiares de diseño bioclimático, acceso vial asfaltado y partidas urbanas consolidadas.',
-    highlights: ['Clima templado-cálido 24 °C', 'Partidas urbanas independientes', 'Conectividad inmediata'],
+      'Capital comercial de La Convención con clima cálido alrededor de 24 °C. Reúne casas familiares amplias, todos los servicios urbanos y títulos independientes.',
+    highlights: ['Clima cálido de 24 °C', 'Partidas urbanas independientes', 'Todos los servicios'],
     image: MEDIA_ASSETS.quillabambaVilla,
     video: HUAYOPATA_VALLEY_VIDEO,
     videoScaleOrigin: 'origin-top-left',
@@ -200,11 +250,11 @@ export const VALLEY_ZONES: ValleyZone[] = [
     indexLabel: '03',
     name: 'Santa Teresa',
     altitude: '1,550 m s. n. m.',
-    microclimate: 'Aguas termales y ruta a Machu Picchu',
-    tagline: 'Cañones turquesa, fuentes termales de Cocalmayo y eco-hospitalidad de alto valor.',
+    microclimate: 'Aguas termales y ruta turística',
+    tagline: 'Quebradas verdes, cercanía a Cocalmayo y terrenos con vista al cañón.',
     description:
-      'Corredor amazónico hacia Machu Picchu con flujo internacional constante. Sus laderas con cascadas y cercanía a Cocalmayo posicionan a la zona para lodges boutique y retiros de bienestar.',
-    highlights: ['Demanda ecoturística internacional', 'Fuentes termales naturales', 'Ruta alterna a Machu Picchu'],
+      'Corredor natural hacia Machu Picchu con movimiento turístico constante. Sus terrenos con quebradas de agua y cercanía a las termas de Cocalmayo funcionan muy bien para hospedajes rurales.',
+    highlights: ['Ruta hacia Machu Picchu', 'Cerca de baños termales', 'Aptos para hospedaje'],
     image: MEDIA_ASSETS.santaTeresaCanyon,
     video: HUAYOPATA_AERIAL_VIDEO,
     videoScaleOrigin: 'origin-bottom-right',
@@ -216,10 +266,10 @@ export const VALLEY_ZONES: ValleyZone[] = [
     indexLabel: '04',
     name: 'Echarati',
     altitude: '850 m s. n. m.',
-    microclimate: 'Cacao chuncho y ríos cristalinos',
-    tagline: 'Grandes extensiones fértiles de cacao fino de aroma y selva alta exuberante.',
+    microclimate: 'Zona de cacao y ríos limpios',
+    tagline: 'Extensiones amplias y fértiles para cacao fino y proyectos agrícolas.',
     description:
-      'Territorio emblemático del cacao Chuncho ancestral peruano. Ideal para inversionistas patrimoniales que buscan fincas de mediana y gran escala con ríos limpios y alto potencial agroforestal.',
+      'Zona tradicional de cacao Chuncho y frutales. Recomendada para quienes buscan fundos amplios con río cercano y buen suelo agrícola.',
     highlights: ['Cacao Chuncho nativo', 'Fundos de 20 a 150 Ha', 'Ríos y quebradas limpias'],
     image: MEDIA_ASSETS.echaratiCacao,
     video: HUAYOPATA_VALLEY_VIDEO,
@@ -232,11 +282,11 @@ export const VALLEY_ZONES: ValleyZone[] = [
     indexLabel: '05',
     name: 'Maranura',
     altitude: '1,120 m s. n. m.',
-    microclimate: 'Terrazas soleadas y cítricos',
-    tagline: 'Fincas panorámicas sobre el río Urubamba a pocos minutos de Quillabamba.',
+    microclimate: 'Laderas soleadas y frutales',
+    tagline: 'Fincas con vista al río Urubamba a pocos minutos de Quillabamba.',
     description:
-      'Equilibrio sereno entre conectividad por carretera asfaltada y amplitud rural. Sus laderas soleadas albergan cítricos, café orgánico y parcelas listas para casas de campo.',
-    highlights: ['Acceso directo por Ruta PE-28B', 'Alta luminosidad todo el año', 'Terrazas listas para obra'],
+      'Buena combinación entre carretera asfaltada y tranquilidad rural. Sus laderas soleadas producen cítricos, palto y café, y cuentan con espacios listos para construir.',
+    highlights: ['Acceso por carretera PE-28B', 'Buen sol todo el año', 'Listo para construir'],
     image: MEDIA_ASSETS.maranuraEstate,
     video: HUAYOPATA_AERIAL_VIDEO,
     videoScaleOrigin: 'origin-bottom-left',
@@ -258,16 +308,16 @@ export const PROPERTIES: PropertyItem[] = [
     altitude: '1,780 m s. n. m.',
     sunarpStatus: 'Inscrita en SUNARP · Partida N.° 11048291',
     summary:
-      '46 hectáreas con bosque maduro de pino y selva alta, carretera interna afirmada, casa base y terrazas aptas para café Geisha y té.',
+      '46 hectáreas con bosque maduro de pino, camino afirmado interno, casa base y zonas aptas para café y té.',
     description:
-      'Propiedad insignia con levantamiento aerofotogramétrico completo en Huayopata. Combina macizo forestal consolidado, trocha carrozable privada compactada a lo largo de la ladera, pabellón operativo y nacientes propias de agua cristalina.',
+      'Finca de 46 hectáreas en Huayopata con planos verificados por dron. Combina bosque maduro, trocha carrozable propia hasta la parte alta, caseta base y dos nacientes naturales de agua.',
     features: [
-      '46.0 Ha con lindero georreferenciado mediante dron RTK',
-      'Trocha vehicular privada ejecutada hasta la cumbre',
-      'Suelos aptos para café Geisha y té de especialidad',
-      'Dos ojos de agua registrados y caseta base existente',
+      '46.0 Ha con linderos verificados mediante dron',
+      'Trocha vehicular propia hasta la parte alta',
+      'Suelos aptos para café de altura y té',
+      'Dos ojos de agua y caseta base existente',
     ],
-    productivityOrArchitecture: 'Suelo forestal y cafetalero de altura',
+    productivityOrArchitecture: 'Suelo forestal y cafetalero',
     images: [
       MEDIA_ASSETS.huayopataAerial,
       MEDIA_ASSETS.huayopataLoma,
@@ -291,22 +341,22 @@ export const PROPERTIES: PropertyItem[] = [
     altitude: '1,180 m s. n. m.',
     sunarpStatus: 'Inscrita en SUNARP · Libre de cargas',
     summary:
-      'Residencia contemporánea de teca, piedra andina y piscina infinita suspendida sobre el valle cálido de Quillabamba.',
+      'Casa amplia en madera y piedra con piscina y vista abierta sobre el valle de Quillabamba.',
     description:
-      'Arquitectura bioclimática concebida para la ceja de selva: celosías de madera shihuahuaco, ventanales acústicos piso-techo, piscina infinita climatizada y terraza de 140 m² orientada al poniente.',
+      'Residencia pensada para el clima cálido de Quillabamba, construida en madera dura y piedra natural, con amplios ventanales, piscina temperada y terraza familiar de 140 m².',
     features: [
-      'Terreno matriz privado de 4,200 m² con cerco vivo',
-      'Piscina infinita temperada y deck en teca certificada',
-      'Sistema solar híbrido con respaldo de litio (15 kW)',
-      'Suite principal panorámica con terraza privada',
+      'Terreno privado de 4,200 m² con cerco vivo',
+      'Piscina temperada y terraza en madera',
+      'Sistema solar de respaldo (15 kW)',
+      'Dormitorio principal con terraza privada',
     ],
-    productivityOrArchitecture: 'Arquitectura orgánica · Entrega llave en mano',
+    productivityOrArchitecture: 'Residencia lista para habitar',
     images: [MEDIA_ASSETS.quillabambaVilla],
     coordinates: { lat: -12.861, lng: -72.698 },
   },
   {
     id: 'hacienda-neblina-huayopata',
-    title: 'Terreno Mirador & Laderas de Huayopata',
+    title: 'Terreno Mirador · Huayopata',
     zone: 'Huayopata',
     category: 'Terrenos de Inversión',
     priceUsd: 235000,
@@ -316,16 +366,16 @@ export const PROPERTIES: PropertyItem[] = [
     altitude: '1,690 m s. n. m.',
     sunarpStatus: 'Inscrita en SUNARP · Título definitivo',
     summary:
-      '18.5 hectáreas en Huayopata con trocha afirmada, vistas panorámicas hacia el pueblo y plataformas listas para desarrollo.',
+      '18.5 hectáreas en Huayopata con trocha afirmada, vista hacia el pueblo y áreas planas listas para proyecto.',
     description:
-      'Predio de inversión en Huayopata con 10 hectáreas de ladera cultivable y 8.5 hectáreas de bosque nuboso y miradores naturales sobre el valle y centro poblado.',
+      'Terreno de 18.5 hectáreas en Huayopata que combina 10 hectáreas cultivables y 8.5 hectáreas de bosque nativo con miradores naturales hacia el valle y el pueblo.',
     features: [
-      '18.5 Ha con terrazas naturales y bosque nativo de altura',
-      'Acceso vehicular consolidado a través de todo el predio',
-      'Vistas abiertas hacia la quebrada y centro poblado de Huayopata',
+      '18.5 Ha entre área cultivable y bosque nativo',
+      'Ingreso vehicular afirmado por todo el predio',
+      'Vista abierta hacia el pueblo de Huayopata',
       'Partida independiente saneada en SUNARP',
     ],
-    productivityOrArchitecture: 'Terreno estratégico de altura en Huayopata',
+    productivityOrArchitecture: 'Terreno mixto agrícola y mirador',
     images: [
       MEDIA_ASSETS.huayopataTrocha,
       MEDIA_ASSETS.huayopataPueblo,
@@ -343,18 +393,18 @@ export const PROPERTIES: PropertyItem[] = [
     isLand: true,
     hectares: 24.0,
     altitude: '1,520 m s. n. m.',
-    sunarpStatus: 'Inscrita en SUNARP · Levantamiento RTK',
+    sunarpStatus: 'Inscrita en SUNARP · Plano georreferenciado',
     summary:
-      '24 hectáreas con frente de río cristalino y cascada natural a 12 minutos de las aguas termales de Santa Teresa.',
+      '24 hectáreas con frente de río y caída de agua a 12 minutos de los baños termales de Santa Teresa.',
     description:
-      'Enclave privilegiado para eco-hospitalidad de alto estándar en la ruta amazónica hacia Machu Picchu. Cuenta con tres plataformas naturales niveladas, ribera de río y estudio geotécnico preliminar.',
+      'Terreno ubicado en la ruta turística hacia Machu Picchu. Cuenta con tres áreas niveladas naturales, ribera de río y estudio básico de suelos listo para proyecto turístico o retiro privado.',
     features: [
-      '420 metros lineales de ribera y caída de agua propia',
-      'Zonificación apta para eco-lodge o retiro privado',
-      'Factibilidad eléctrica trifásica a pie de predio',
+      '420 metros de frente de río y caída de agua',
+      'Ideal para hospedaje rural o casa de retiro',
+      'Factibilidad eléctrica a pie de terreno',
       'Estudio topográfico y de suelos incluido',
     ],
-    productivityOrArchitecture: 'Eco-hospitalidad · Ruta Machu Picchu',
+    productivityOrArchitecture: 'Uso turístico o retiro en naturaleza',
     images: [MEDIA_ASSETS.santaTeresaCanyon],
     coordinates: { lat: -13.118, lng: -72.596 },
   },
@@ -372,16 +422,16 @@ export const PROPERTIES: PropertyItem[] = [
     altitude: '1,120 m s. n. m.',
     sunarpStatus: 'Inscrita en SUNARP · Independizada',
     summary:
-      'Casa de campo en piedra y madera oscura con terrazas sobre plantaciones de cítricos y el río Urubamba.',
+      'Casa de campo en piedra y madera con terrazas sobre plantaciones de cítricos y el río Urubamba.',
     description:
-      'Residencia elevada a 18 minutos de Quillabamba por vía asfaltada, diseñada con amplios decks panorámicos, zona de fogón exterior y huerto privado de cítricos y palto.',
+      'Casa de campo a 18 minutos de Quillabamba por carretera asfaltada. Cuenta con terrazas techadas, zona de parrilla exterior y huerta propia de cítricos y palto.',
     features: [
-      'Terreno campestre de 5,800 m² con acceso vehicular',
-      'Terrazas cubiertas en madera estructural y piedra',
-      'Cuatro suites con vista abierta al valle del Urubamba',
-      'Riego tecnificado instalado para frutales',
+      'Terreno campestre de 5,800 m² con portón vehicular',
+      'Terrazas techadas en madera y piedra',
+      'Cuatro dormitorios con vista al valle',
+      'Sistema de riego instalado para frutales',
     ],
-    productivityOrArchitecture: 'Residencia campestre · 18 min de Quillabamba',
+    productivityOrArchitecture: 'Casa de campo · 18 min de Quillabamba',
     images: [MEDIA_ASSETS.maranuraEstate],
     coordinates: { lat: -12.954, lng: -72.668 },
   },
@@ -395,18 +445,18 @@ export const PROPERTIES: PropertyItem[] = [
     isLand: true,
     hectares: 52.0,
     altitude: '890 m s. n. m.',
-    sunarpStatus: 'Inscrita en SUNARP · Partida matriz saneada',
+    sunarpStatus: 'Inscrita en SUNARP · Partida saneada',
     summary:
-      '52 hectáreas con 22 Ha de cacao Chuncho nativo en producción, frente fluvial cristalino y pabellón en madera.',
+      '52 hectáreas con 22 Ha de cacao Chuncho en producción, acceso al río y casa principal en madera.',
     description:
-      'Finca productiva con excelente piso ecológico en el Alto Urubamba. Sus 22 hectáreas de cacao Chuncho fino de aroma generan cosecha continua con compradores de chocolatería fina.',
+      'Finca agrícola en producción dentro de Echarati. Sus 22 hectáreas de cacao Chuncho generan cosecha constante, con casa de madera frente al río y área de secado.',
     features: [
-      '22 Ha de cacao Chuncho injertado en plena cosecha',
-      'Pabellón elevado en cedro y piedra frente al río',
-      'Módulo de fermentación y secadero solar',
-      'Acceso directo desde corredor hacia Kiteni',
+      '22 Ha de cacao Chuncho en plena producción',
+      'Casa de madera y piedra frente al río',
+      'Módulo de fermentación y secado solar',
+      'Acceso directo desde la vía hacia Kiteni',
     ],
-    productivityOrArchitecture: 'Agroexportación orgánica y reserva fluvial',
+    productivityOrArchitecture: 'Fundo cacaotero en producción',
     images: [MEDIA_ASSETS.echaratiCacao],
     coordinates: { lat: -12.764, lng: -72.575 },
   },
@@ -415,32 +465,32 @@ export const PROPERTIES: PropertyItem[] = [
 export const TESTIMONIALS: TestimonialItem[] = [
   {
     id: 'test-1',
-    name: 'Martín Aramburú Velasco',
-    role: 'Socio Director, Fondo Agroforestal Andino',
-    origin: 'Lima · Adquirió 42 Ha en Huayopata',
+    name: 'Martín Aramburú',
+    role: 'Productor agrícola',
+    origin: 'Lima · Compró en Huayopata',
     propertyAcquired: 'Finca cafetalera en altura',
     quote:
-      'Evaluamos cuatro fundos en La Convención con superposición de linderos hasta llegar a Selva Alta. Su equipo auditó cada partida en SUNARP y realizó el vuelo fotogramétrico RTK antes de firmar arras.',
-    outcome: 'Cierre notarial sin observaciones en 28 días y primera cosecha de Geisha exportada.',
+      'Antes vimos terrenos con dudas en los linderos hasta llegar a Terrantier. Revisaron la partida en SUNARP y volaron el dron para medir todo en campo antes de firmar.',
+    outcome: 'Firma en notaría sin observaciones en menos de un mes.',
   },
   {
     id: 'test-2',
-    name: 'Elena & Thomas Lindner',
-    role: 'Arquitecta y Emprendedor Turístico',
-    origin: 'Zúrich / Cusco · Predio en Santa Teresa',
-    propertyAcquired: 'Reserva eco-turística 12 Ha',
+    name: 'Elena y Thomas Lindner',
+    role: 'Arquitecta y emprendedor turístico',
+    origin: 'Cusco · Predio en Santa Teresa',
+    propertyAcquired: 'Terreno de 12 Ha',
     quote:
-      'Buscábamos acceso real al agua y privacidad en la ruta hacia Machu Picchu. Recorrimos cada vértice en campo con sus ingenieros y validamos caudales y zonificación antes de invertir.',
-    outcome: 'Anteproyecto de 6 suites boutique aprobado con total certeza registral.',
+      'Buscábamos agua propia y privacidad cerca de la ruta a Machu Picchu. Caminamos todo el lindero con el equipo y validamos documentos antes de dar el paso.',
+    outcome: 'Compra cerrada con planos y partida al día.',
   },
   {
     id: 'test-3',
-    name: 'Dra. Lucía Mendoza Quiñones',
-    role: 'Médica Especialista e Inversionista Privada',
-    origin: 'Arequipa · Residencia en Quillabamba',
-    propertyAcquired: 'Villa familiar 420 m²',
+    name: 'Lucía Mendoza',
+    role: 'Médica e inversionista',
+    origin: 'Arequipa · Casa en Quillabamba',
+    propertyAcquired: 'Residencia familiar 420 m²',
     quote:
-      'Queríamos una casa de clima cálido permanente lejos de la saturación urbana. La transparencia técnica en tasación, saneamiento y entrega notarial superó nuestro estándar.',
-    outcome: 'Apreciación estimada del 18% en 24 meses y renta corporativa estacional.',
+      'Queríamos una casa con buen clima todo el año. Nos dieron información clara de precios, documentos y el trámite en notaría fue muy ordenado.',
+    outcome: 'Entrega rápida con título independizado.',
   },
 ];

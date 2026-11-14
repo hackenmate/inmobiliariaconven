@@ -14,8 +14,10 @@ import {
   type PropertyItem,
 } from '../data/valleyData';
 import { MediaImage, ORGANIC_EASE } from './RevealText';
+import { CATEGORY_LABELS, UI_COPY, type LanguageCode } from '../i18n/translations';
 
 interface PropertyCardProps {
+  language: LanguageCode;
   property: PropertyItem;
   currency: CurrencyCode;
   penRate: number;
@@ -25,6 +27,7 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({
+  language,
   property,
   currency,
   penRate,
@@ -35,6 +38,7 @@ export function PropertyCard({
   const [activeIndex, setActiveIndex] = useState(0);
   const lastStepTimestampRef = useRef(0);
   const prefersReducedMotion = useReducedMotion();
+  const copy = UI_COPY[language].properties;
 
   const totalPhotos = property.images.length;
   const hasGallery = totalPhotos > 1;
@@ -57,7 +61,7 @@ export function PropertyCard({
 
   const primaryDimension = property.isLand
     ? `${property.hectares?.toFixed(1)} Ha`
-    : `${property.areaSqm} m² · ${property.bedrooms} Hab. · ${property.bathrooms} Baños`;
+    : `${property.areaSqm} m² · ${property.bedrooms} ${copy.roomsShort} · ${property.bathrooms} ${copy.bathsShort}`;
 
   return (
     <motion.article
@@ -66,12 +70,12 @@ export function PropertyCard({
       viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: 0.65, delay: index * 0.05, ease: ORGANIC_EASE }}
       onClick={() => onOpenModal(property)}
-      className="group relative flex flex-col rounded-2xl overflow-hidden bg-white border border-[#18241E]/10 hover:border-[#18241E]/28 transition-colors duration-300 cursor-pointer"
+      className="group relative flex flex-col rounded-2xl overflow-hidden bg-white border border-[#0E2F1E]/10 hover:border-[#C8A562]/55 hover:shadow-[0_12px_32px_rgba(14,47,30,0.08)] transition-all duration-300 cursor-pointer"
     >
       {/* Galería visual interactiva al hover */}
       <div
         onWheel={handleWheelOnMedia}
-        className="relative aspect-[4/3] overflow-hidden bg-[#101A14]"
+        className="relative aspect-[4/3] overflow-hidden bg-[#0E2F1E]"
       >
         <div className="relative w-full h-full">
           {property.images.map((imgSrc, idx) => (
@@ -96,10 +100,9 @@ export function PropertyCard({
           aria-hidden="true"
         />
 
-        {/* Insignia de zona + contador de fotos (1/5 visible en hover) */}
-        <div className="absolute top-3 inset-x-3 z-20 flex items-center justify-between pointer-events-none">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-black/50 backdrop-blur-md text-white text-[11px] font-medium px-3 py-1 border border-white/15">
-            <MapPin className="w-3 h-3 text-[#E4CFAF]" />
+        <div className="top-3 inset-x-3 z-20 flex items-center justify-between pointer-events-none absolute">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0E2F1E]/75 backdrop-blur-md text-white text-[11px] font-medium px-3 py-1 border border-[#C8A562]/30">
+            <MapPin className="w-3 h-3 text-[#E3C992]" />
             <span>{property.zone}</span>
           </span>
 
@@ -110,12 +113,12 @@ export function PropertyCard({
           )}
         </div>
 
-        {/* Flechas laterales ubicadas en el tercio superior-medio para no chocar con el panel inferior */}
+        {/* Flechas laterales */}
         {hasGallery && (
           <>
             <button
               type="button"
-              aria-label="Foto anterior"
+              aria-label={copy.prevPhoto}
               onMouseEnter={() => stepPhoto(-1)}
               onClick={(e) => {
                 e.stopPropagation();
@@ -128,7 +131,7 @@ export function PropertyCard({
 
             <button
               type="button"
-              aria-label="Foto siguiente"
+              aria-label={copy.nextPhoto}
               onMouseEnter={() => stepPhoto(1)}
               onClick={(e) => {
                 e.stopPropagation();
@@ -141,10 +144,10 @@ export function PropertyCard({
           </>
         )}
 
-        {/* Panel Quick Info compacto con glassmorphism deslizable al hover */}
+        {/* Panel Quick Info compacto */}
         <div
           onClick={(e) => e.stopPropagation()}
-          className="absolute inset-x-0 bottom-0 z-20 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] bg-black/60 backdrop-blur-md text-white border-t border-white/15 p-3.5"
+          className="absolute inset-x-0 bottom-0 z-20 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] bg-[#0E2F1E]/85 backdrop-blur-md text-white border-t border-[#C8A562]/30 p-3.5"
         >
           {hasGallery && (
             <div className="flex items-center gap-1.5 mb-2.5">
@@ -152,24 +155,21 @@ export function PropertyCard({
                 <button
                   key={`${property.id}-dot-${idx}`}
                   type="button"
-                  aria-label={`Ir a foto ${idx + 1}`}
+                  aria-label={`${copy.goToPhoto} ${idx + 1}`}
                   onMouseEnter={() => setActiveIndex(idx)}
                   onClick={() => setActiveIndex(idx)}
                   className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${
-                    idx === activeIndex ? 'w-5 bg-white' : 'w-2 bg-white/40 hover:bg-white/75'
+                    idx === activeIndex ? 'w-5 bg-[#E3C992]' : 'w-2 bg-white/40 hover:bg-white/75'
                   }`}
                 />
               ))}
             </div>
           )}
 
-          <div className="flex items-center justify-between gap-2 text-[11px] text-white/90 mb-2.5">
+          <div className="flex items-center text-[11px] text-white/90 mb-2.5">
             <span className="inline-flex items-center gap-1.5 truncate">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#E4CFAF] shrink-0" />
+              <ShieldCheck className="w-3.5 h-3.5 text-[#E3C992] shrink-0" />
               <span className="truncate">{property.sunarpStatus}</span>
-            </span>
-            <span className="shrink-0 font-medium text-[#E4CFAF] tabular-nums">
-              {property.altitude}
             </span>
           </div>
 
@@ -180,14 +180,14 @@ export function PropertyCard({
               className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-white/15 hover:bg-white/25 text-white text-[11px] font-medium px-2.5 py-1.5 transition-colors cursor-pointer"
             >
               <Maximize2 className="w-3 h-3" />
-              <span>Ver ficha</span>
+              <span>{copy.viewSheet}</span>
             </button>
             <button
               type="button"
               onClick={() => onRequestDossier(property)}
-              className="flex-1 inline-flex items-center justify-center gap-1 rounded-lg bg-[#FAF9F6] hover:bg-white text-[#18241E] text-[11px] font-semibold px-2.5 py-1.5 transition-colors cursor-pointer"
+              className="flex-1 inline-flex items-center justify-center gap-1 rounded-lg bg-[#FAF8F3] hover:bg-white text-[#0E2F1E] text-[11px] font-semibold px-2.5 py-1.5 transition-colors cursor-pointer"
             >
-              <span>Solicitar dossier</span>
+              <span>{copy.requestDossier}</span>
               <ArrowUpRight className="w-3 h-3" />
             </button>
           </div>
@@ -197,38 +197,40 @@ export function PropertyCard({
       {/* Cuerpo editorial */}
       <div className="p-6 flex-1 flex flex-col justify-between gap-5">
         <div>
-          <div className="text-xs font-medium text-[#8C6239]">
+          <div className="text-xs font-medium text-[#9A783A]">
             <span>{property.zone}</span>
-            <span aria-hidden="true" className="mx-2 text-[#18241E]/25">
+            <span aria-hidden="true" className="mx-2 text-[#0E2F1E]/25">
               ·
             </span>
-            <span className="text-[#18241E]/65">{property.category}</span>
+            <span className="text-[#2D3332]/70">
+              {CATEGORY_LABELS[language][property.category]}
+            </span>
           </div>
 
-          <h3 className="mt-2 font-serif text-xl md:text-[22px] font-normal leading-snug text-[#18241E] group-hover:text-[#2A4736] transition-colors">
+          <h3 className="mt-2 font-serif text-xl md:text-[22px] font-normal leading-snug text-[#0E2F1E] group-hover:text-[#1B4730] transition-colors">
             {property.title}
           </h3>
 
-          <p className="mt-2 text-sm leading-relaxed text-[#18241E]/70 line-clamp-2">
+          <p className="mt-2 text-sm leading-relaxed text-[#2D3332]/80 line-clamp-2">
             {property.summary}
           </p>
         </div>
 
-        <div className="pt-4 border-t border-[#18241E]/10 space-y-3">
-          <div className="text-xs text-[#18241E]/75 tabular-nums flex flex-wrap items-center gap-x-2">
-            <span className="font-semibold text-[#18241E]">{primaryDimension}</span>
-            <span aria-hidden="true" className="text-[#18241E]/25">
+        <div className="pt-4 border-t border-[#0E2F1E]/10 space-y-3">
+          <div className="text-xs text-[#2D3332]/80 tabular-nums flex flex-wrap items-center gap-x-2">
+            <span className="font-semibold text-[#0E2F1E]">{primaryDimension}</span>
+            <span aria-hidden="true" className="text-[#0E2F1E]/25">
               ·
             </span>
             <span>{property.altitude}</span>
           </div>
 
           <div className="flex items-baseline justify-between gap-4 pt-1">
-            <span className="font-serif text-xl md:text-2xl font-medium tabular-nums text-[#18241E]">
+            <span className="font-serif text-xl md:text-2xl font-medium tabular-nums text-[#0E2F1E]">
               {formattedPrice}
             </span>
-            <span className="inline-flex items-center gap-1 text-xs md:text-sm font-medium text-[#2A4736] group-hover:translate-x-0.5 transition-transform whitespace-nowrap">
-              <span>Ver detalles</span>
+            <span className="inline-flex items-center gap-1 text-xs md:text-sm font-medium text-[#1B4730] group-hover:translate-x-0.5 transition-transform whitespace-nowrap">
+              <span>{copy.viewDetails}</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
             </span>
           </div>

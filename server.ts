@@ -1,15 +1,17 @@
 import express from 'express';
 import fs from 'node:fs/promises';
+import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
+import { registerFaqGeminiRoutes } from './server/faqGemini.ts';
 
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = Number(process.env.PORT) || 3000;
-const LEADS_FILE = '/tmp/selva_alta_leads.json';
+const LEADS_FILE = '/tmp/terrantier_leads.json';
 
 interface ZoneCoordinates {
   lat: number;
@@ -106,12 +108,15 @@ let fxCache: CachedExchangeRate | null = null;
 
 async function startServer() {
   const app = express();
+  const httpServer = http.createServer(app);
   app.use(express.json({ limit: '64kb' }));
+
+  registerFaqGeminiRoutes(app, httpServer);
 
   app.get('/api/health', (_req, res) => {
     res.json({
       ok: true,
-      service: 'selva-alta-realty',
+      service: 'terrantier-inmobiliaria',
       timestamp: new Date().toISOString(),
     });
   });
@@ -280,7 +285,7 @@ async function startServer() {
     }
 
     const randomCode = Math.floor(1000 + Math.random() * 9000);
-    const referenceCode = `SA-${new Date().getFullYear()}-${randomCode}`;
+    const referenceCode = `TR-${new Date().getFullYear()}-${randomCode}`;
     const receivedAt = new Date().toISOString();
 
     const record = {
@@ -338,8 +343,8 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Selva Alta Realty server listening on http://0.0.0.0:${PORT}`);
+  httpServer.listen(PORT, '0.0.0.0', () => {
+    console.log(`Terrantier Inmobiliaria server listening on http://0.0.0.0:${PORT}`);
   });
 }
 

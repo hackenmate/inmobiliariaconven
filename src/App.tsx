@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
-import type { CurrencyCode, HeroSearchFilters, PropertyItem, ZoneId } from './data/valleyData';
+import type {
+  AgentProfile,
+  CurrencyCode,
+  HeroSearchFilters,
+  PropertyItem,
+  ZoneId,
+} from './data/valleyData';
+import type { LanguageCode } from './i18n/translations';
 import { fetchExchangeRate } from './services/api';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
@@ -7,7 +14,9 @@ import { PropertiesSection } from './components/PropertiesSection';
 import { ZonesSection } from './components/ZonesSection';
 import { FilmReelGallery } from './components/FilmReelGallery';
 import { ManifestoSection } from './components/ManifestoSection';
+import { TeamSection } from './components/TeamSection';
 import { SocialProofSection } from './components/SocialProofSection';
+import { FaqSection } from './components/FaqSection';
 import { LeadCaptureSection } from './components/LeadCaptureSection';
 import { Footer } from './components/Footer';
 
@@ -18,12 +27,18 @@ const DEFAULT_FILTERS: HeroSearchFilters = {
 };
 
 export default function App() {
+  const [language, setLanguage] = useState<LanguageCode>('es');
   const [filters, setFilters] = useState<HeroSearchFilters>(DEFAULT_FILTERS);
   const [preselectedProperty, setPreselectedProperty] = useState<PropertyItem | null>(null);
+  const [preselectedAgent, setPreselectedAgent] = useState<AgentProfile | null>(null);
   const [currency, setCurrency] = useState<CurrencyCode>('USD');
   const [penRate, setPenRate] = useState<number>(3.75);
   const [isLiveRate, setIsLiveRate] = useState<boolean>(false);
   const [gmpQuotaExceeded, setGmpQuotaExceeded] = useState<boolean>(false);
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
 
   useEffect(() => {
     const handleQuotaExceeded = () => setGmpQuotaExceeded(true);
@@ -68,8 +83,13 @@ export default function App() {
     scrollToSection('contacto');
   };
 
+  const handleSelectAgentForLead = (agent: AgentProfile) => {
+    setPreselectedAgent(agent);
+    scrollToSection('contacto');
+  };
+
   return (
-    <div className="min-h-screen bg-[#FAF9F6] text-[#18241E] selection:bg-[#2A4736] selection:text-[#FAF9F6]">
+    <div className="min-h-screen bg-[#FAF8F3] text-[#0E2F1E] selection:bg-[#C8A562]/30 selection:text-[#0E2F1E]">
       {gmpQuotaExceeded && (
         <div className="bg-amber-50 border-b border-amber-200 text-amber-900 px-4 py-2.5 text-xs md:text-sm text-center sticky top-0 z-50 shadow-sm">
           <span>
@@ -86,14 +106,19 @@ export default function App() {
           </span>
         </div>
       )}
-      <Navbar onRequestQuote={() => scrollToSection('contacto')} />
+      <Navbar
+        language={language}
+        onChangeLanguage={setLanguage}
+        onRequestQuote={() => scrollToSection('contacto')}
+      />
 
       <main>
-        <HeroSection filters={filters} onApplyFilters={setFilters} />
+        <HeroSection language={language} filters={filters} onApplyFilters={setFilters} />
 
-        <FilmReelGallery />
+        <FilmReelGallery language={language} />
 
         <PropertiesSection
+          language={language}
           filters={filters}
           currency={currency}
           penRate={penRate}
@@ -106,16 +131,24 @@ export default function App() {
           onSelectPropertyForLead={handleSelectPropertyForLead}
         />
 
-        <ZonesSection onFilterByZone={handleFilterByZone} />
+        <ZonesSection language={language} onFilterByZone={handleFilterByZone} />
 
-        <ManifestoSection />
+        <ManifestoSection language={language} />
 
-        <SocialProofSection />
+        <TeamSection language={language} onSelectAgent={handleSelectAgentForLead} />
 
-        <LeadCaptureSection preselectedProperty={preselectedProperty} />
+        <SocialProofSection language={language} />
+
+        <FaqSection language={language} />
+
+        <LeadCaptureSection
+          language={language}
+          preselectedProperty={preselectedProperty}
+          preselectedAgent={preselectedAgent}
+        />
       </main>
 
-      <Footer onSelectZone={handleFilterByZone} />
+      <Footer language={language} onSelectZone={handleFilterByZone} />
     </div>
   );
 }

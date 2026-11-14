@@ -19,8 +19,10 @@ import {
   type PropertyItem,
   type ZoneId,
 } from '../data/valleyData';
+import { UI_COPY, type LanguageCode } from '../i18n/translations';
 
 interface LaConvencionMapProps {
+  language: LanguageCode;
   properties: PropertyItem[];
   activeZone: 'all' | ZoneId;
   currency: CurrencyCode;
@@ -98,6 +100,7 @@ function MapViewportController({
 }
 
 function PropertyMarkerItem({
+  language,
   property,
   isSelected,
   isHovered,
@@ -110,6 +113,7 @@ function PropertyMarkerItem({
   onOpenProperty,
   onRequestDossier,
 }: {
+  language: LanguageCode;
   property: PropertyItem;
   isSelected: boolean;
   isHovered: boolean;
@@ -125,6 +129,7 @@ function PropertyMarkerItem({
   const [markerRef, marker] = useAdvancedMarkerRef();
   const shortLabel = formatShortPrice(property.priceUsd, currency, penRate);
   const fullPrice = formatPropertyPrice(property.priceUsd, currency, penRate);
+  const copy = UI_COPY[language].map;
 
   return (
     <>
@@ -140,15 +145,15 @@ function PropertyMarkerItem({
         <div
           className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg transition-all duration-200 cursor-pointer border ${
             isSelected
-              ? 'bg-[#2A4736] text-[#FAF9F6] border-[#E4CFAF] scale-110 ring-2 ring-[#2A4736]/30'
+              ? 'bg-[#0E2F1E] text-[#FAF8F3] border-[#C8A562] scale-110 ring-2 ring-[#0E2F1E]/30'
               : isHovered
-                ? 'bg-[#18241E] text-white border-white/40 scale-105'
-                : 'bg-white text-[#18241E] border-[#18241E]/20 hover:bg-[#18241E] hover:text-white'
+                ? 'bg-[#0E2F1E] text-white border-[#C8A562]/50 scale-105'
+                : 'bg-white text-[#0E2F1E] border-[#0E2F1E]/20 hover:bg-[#0E2F1E] hover:text-white'
           }`}
         >
           <span
             className={`w-2 h-2 rounded-full ${
-              isSelected ? 'bg-[#E4CFAF]' : 'bg-[#2A4736]'
+              isSelected ? 'bg-[#E3C992]' : 'bg-[#1B4730]'
             }`}
           />
           <span className="tabular-nums whitespace-nowrap">{shortLabel}</span>
@@ -161,38 +166,38 @@ function PropertyMarkerItem({
           maxWidth={270}
           onCloseClick={onClose}
         >
-          <div className="w-[235px] sm:w-[250px] text-[#18241E] font-sans">
-            <div className="relative h-28 w-full rounded-lg overflow-hidden mb-2.5 bg-[#F1EFEA]">
+          <div className="w-[235px] sm:w-[250px] text-[#0E2F1E] font-sans">
+            <div className="relative h-28 w-full rounded-lg overflow-hidden mb-2.5 bg-[#F3EFE6]">
               <img
                 src={property.images[0]}
                 alt={property.title}
                 className="w-full h-full object-cover"
               />
-              <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/70 text-white text-[10px] font-medium">
+              <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-[#0E2F1E]/85 text-white text-[10px] font-medium">
                 {property.zone}
               </span>
             </div>
 
-            <h4 className="font-serif text-base font-medium leading-snug text-[#18241E]">
+            <h4 className="font-serif text-base font-medium leading-snug text-[#0E2F1E]">
               {property.title}
             </h4>
 
-            <div className="mt-1.5 flex items-center justify-between text-xs text-[#18241E]/70">
+            <div className="mt-1.5 flex items-center justify-between text-xs text-[#2D3332]/75">
               <span>
                 {property.isLand ? `${property.hectares?.toFixed(1)} Ha` : `${property.areaSqm} m²`}
               </span>
               <span className="inline-flex items-center gap-1">
-                <Mountain className="w-3 h-3 text-[#2A4736]" />
+                <Mountain className="w-3 h-3 text-[#9A783A]" />
                 {property.altitude}
               </span>
             </div>
 
-            <div className="mt-2 pt-2 border-t border-[#18241E]/10 flex items-center justify-between">
-              <span className="font-serif text-lg font-medium text-[#18241E] tabular-nums">
+            <div className="mt-2 pt-2 border-t border-[#0E2F1E]/10 flex items-center justify-between">
+              <span className="font-serif text-lg font-medium text-[#0E2F1E] tabular-nums">
                 {fullPrice}
               </span>
-              <span className="inline-flex items-center gap-1 text-[10px] text-[#2A4736] font-medium">
-                <ShieldCheck className="w-3 h-3" />
+              <span className="inline-flex items-center gap-1 text-[10px] text-[#1B4730] font-medium">
+                <ShieldCheck className="w-3 h-3 text-[#9A783A]" />
                 SUNARP
               </span>
             </div>
@@ -201,16 +206,16 @@ function PropertyMarkerItem({
               <button
                 type="button"
                 onClick={() => onOpenProperty(property)}
-                className="flex-1 rounded-lg border border-[#18241E]/20 px-2.5 py-1.5 text-xs font-medium text-[#18241E] hover:bg-[#F1EFEA] transition-colors cursor-pointer"
+                className="flex-1 rounded-lg border border-[#0E2F1E]/20 px-2.5 py-1.5 text-xs font-medium text-[#0E2F1E] hover:bg-[#F3EFE6] transition-colors cursor-pointer"
               >
-                Ver ficha
+                {copy.viewSheet}
               </button>
               <button
                 type="button"
                 onClick={() => onRequestDossier(property)}
-                className="flex-1 inline-flex items-center justify-center gap-1 rounded-lg bg-[#18241E] px-2.5 py-1.5 text-xs font-medium text-white hover:bg-[#2A4736] transition-colors cursor-pointer"
+                className="flex-1 inline-flex items-center justify-center gap-1 rounded-lg bg-[#0E2F1E] px-2.5 py-1.5 text-xs font-medium text-white hover:bg-[#1B4730] transition-colors cursor-pointer"
               >
-                <span>Dossier</span>
+                <span>{copy.dossier}</span>
                 <ArrowUpRight className="w-3 h-3" />
               </button>
             </div>
@@ -222,6 +227,7 @@ function PropertyMarkerItem({
 }
 
 function LaConvencionMapCanvas({
+  language,
   properties,
   activeZone,
   currency,
@@ -230,6 +236,7 @@ function LaConvencionMapCanvas({
   onOpenProperty,
   onRequestDossier,
 }: {
+  language: LanguageCode;
   properties: PropertyItem[];
   activeZone: 'all' | ZoneId;
   currency: CurrencyCode;
@@ -241,6 +248,7 @@ function LaConvencionMapCanvas({
   const status = useApiLoadingStatus();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const copy = UI_COPY[language].map;
 
   useEffect(() => {
     if (selectedId && !properties.some((p) => p.id === selectedId)) {
@@ -257,11 +265,10 @@ function LaConvencionMapCanvas({
       <div className="h-[380px] sm:h-[430px] md:h-[460px] w-full flex flex-col items-center justify-center bg-[#F1EFEA] px-6 text-center">
         <MapPin className="w-7 h-7 text-[#2A4736] mb-3" />
         <h3 className="font-serif text-xl text-[#18241E]">
-          No se pudo inicializar el mapa territorial
+          {copy.failedTitle}
         </h3>
         <p className="mt-1.5 text-sm text-[#18241E]/70 max-w-md">
-          Verifica la clave o cuota de Google Maps Platform. Puedes seguir explorando el catálogo completo
-          de propiedades arriba.
+          {copy.failedBody}
         </p>
       </div>
     );
@@ -296,6 +303,7 @@ function LaConvencionMapCanvas({
           return (
             <PropertyMarkerItem
               key={property.id}
+              language={language}
               property={property}
               isSelected={isSelected}
               isHovered={isHovered}
@@ -311,21 +319,12 @@ function LaConvencionMapCanvas({
           );
         })}
       </GoogleMap>
-
-      {/* Leyenda flotante discreta */}
-      <div className="pointer-events-none absolute left-4 bottom-4 hidden sm:flex items-center gap-2 rounded-xl bg-[#18241E]/85 backdrop-blur-md text-[#FAF9F6] px-3.5 py-2 text-xs shadow-lg">
-        <span className="w-2 h-2 rounded-full bg-[#E4CFAF]" />
-        <span>
-          {properties.length > 0
-            ? 'Haz clic en un marcador para ver ficha, altitud y partida SUNARP'
-            : '0 propiedades visibles con los filtros actuales'}
-        </span>
-      </div>
     </div>
   );
 }
 
 export function LaConvencionMap({
+  language,
   properties,
   activeZone,
   currency,
@@ -334,6 +333,7 @@ export function LaConvencionMap({
   onOpenProperty,
   onRequestDossier,
 }: LaConvencionMapProps) {
+  const copy = UI_COPY[language].map;
   const envKey =
     import.meta.env.VITE_GOOGLE_MAPS_API_KEY ||
     (typeof process !== 'undefined' ? process.env.GOOGLE_MAPS_API_KEY : '') ||
@@ -375,18 +375,18 @@ export function LaConvencionMap({
   return (
     <div
       id="mapa-la-convencion"
-      className="scroll-mt-24 rounded-2xl overflow-hidden bg-white border border-[#18241E]/12 shadow-sm"
+      className="scroll-mt-24 rounded-2xl overflow-hidden bg-white border border-[#0E2F1E]/12 shadow-sm"
     >
-      {/* Cabecera territorial limpia sin botones duplicados de distrito */}
-      <div className="px-5 md:px-7 py-4 border-b border-[#18241E]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#FAF9F6]/70">
+      {/* Cabecera territorial */}
+      <div className="px-5 md:px-7 py-4 border-b border-[#0E2F1E]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#FAF8F3]">
         <div>
-          <div className="flex items-center gap-2 text-xs font-medium text-[#2A4736]">
+          <div className="flex items-center gap-2 text-xs font-medium text-[#9A783A]">
             <MapPin className="w-3.5 h-3.5" />
-            <span>Ubicación en La Convención, Cusco</span>
+            <span>{copy.eyebrow}</span>
           </div>
-          <h3 className="font-serif text-xl md:text-2xl font-normal text-[#18241E] mt-0.5">
+          <h3 className="font-serif text-xl md:text-2xl font-normal text-[#0E2F1E] mt-0.5">
             {activeZone === 'all'
-              ? 'Corredor del Alto Urubamba · Todos los distritos'
+              ? copy.allDistrictsHeading
               : `${activeZone} · ${activeZoneMeta?.altitude ?? ''}`}
           </h3>
         </div>
@@ -396,24 +396,24 @@ export function LaConvencionMap({
             <button
               type="button"
               onClick={() => onChangeZone('all')}
-              className="px-3 py-1.5 rounded-lg border border-[#18241E]/15 bg-white hover:bg-[#F1EFEA] text-xs font-medium text-[#18241E] transition-colors cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-[#0E2F1E]/15 bg-white hover:bg-[#F3EFE6] text-xs font-medium text-[#0E2F1E] transition-colors cursor-pointer"
             >
-              Ver todo el valle
+              {copy.viewFullValley}
             </button>
           )}
 
           {/* Selector de capa del mapa */}
           <div
             role="group"
-            aria-label="Tipo de vista del mapa"
-            className="inline-flex items-center gap-1 rounded-xl border border-[#18241E]/12 bg-white p-1"
+            aria-label={copy.layerAria}
+            className="inline-flex items-center gap-1 rounded-xl border border-[#0E2F1E]/12 bg-white p-1"
           >
-            <Layers className="w-3.5 h-3.5 text-[#18241E]/55 ml-1.5 mr-0.5" />
+            <Layers className="w-3.5 h-3.5 text-[#0E2F1E]/55 ml-1.5 mr-0.5" />
             {(
               [
-                { id: 'terrain', label: 'Relieve' },
-                { id: 'hybrid', label: 'Satélite' },
-                { id: 'roadmap', label: 'Rutas' },
+                { id: 'terrain', label: copy.terrain },
+                { id: 'hybrid', label: copy.hybrid },
+                { id: 'roadmap', label: copy.roadmap },
               ] as const
             ).map((mode) => (
               <button
@@ -422,8 +422,8 @@ export function LaConvencionMap({
                 onClick={() => setMapType(mode.id)}
                 className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                   mapType === mode.id
-                    ? 'bg-[#18241E] text-white'
-                    : 'text-[#18241E]/65 hover:text-[#18241E]'
+                    ? 'bg-[#0E2F1E] text-white'
+                    : 'text-[#2D3332]/70 hover:text-[#0E2F1E]'
                 }`}
               >
                 {mode.label}
@@ -436,11 +436,12 @@ export function LaConvencionMap({
       {/* Lienzo de Google Maps */}
       {!keyResolved ? (
         <div className="h-[380px] sm:h-[430px] md:h-[460px] w-full flex items-center justify-center bg-[#F1EFEA] text-sm text-[#18241E]/60">
-          Cargando mapa de La Convención...
+          {copy.loading}
         </div>
       ) : apiKey ? (
-        <APIProvider apiKey={apiKey} libraries={['marker']} language="es" region="PE">
+        <APIProvider apiKey={apiKey} libraries={['marker']} language={language} region="PE">
           <LaConvencionMapCanvas
+            language={language}
             properties={properties}
             activeZone={activeZone}
             currency={currency}
@@ -454,11 +455,10 @@ export function LaConvencionMap({
         <div className="h-[380px] sm:h-[430px] md:h-[460px] w-full flex flex-col items-center justify-center bg-[#F1EFEA] px-6 text-center">
           <MapPin className="w-7 h-7 text-[#2A4736] mb-3" />
           <h3 className="font-serif text-xl text-[#18241E]">
-            Mapa interactivo de La Convención pendiente de clave
+            {copy.noKeyTitle}
           </h3>
           <p className="mt-1.5 text-sm text-[#18241E]/70 max-w-md">
-            Configura <code className="font-mono text-xs">VITE_GOOGLE_MAPS_API_KEY</code> y reinicia el
-            servidor para visualizar los pines georreferenciados en el valle.
+            {copy.noKeyBody}
           </p>
         </div>
       )}

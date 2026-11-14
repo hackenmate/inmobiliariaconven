@@ -16,8 +16,10 @@ import {
   type PropertyItem,
 } from '../data/valleyData';
 import { MediaImage, ORGANIC_EASE } from './RevealText';
+import { CATEGORY_LABELS, UI_COPY, type LanguageCode } from '../i18n/translations';
 
 interface PropertyModalProps {
+  language: LanguageCode;
   property: PropertyItem | null;
   currency: CurrencyCode;
   penRate: number;
@@ -26,6 +28,7 @@ interface PropertyModalProps {
 }
 
 export function PropertyModal({
+  language,
   property,
   currency,
   penRate,
@@ -37,6 +40,8 @@ export function PropertyModal({
   const [showSimulator, setShowSimulator] = useState(false);
   const [downPaymentPct, setDownPaymentPct] = useState(30);
   const [years, setYears] = useState(10);
+  const copy = UI_COPY[language].modal;
+  const propCopy = UI_COPY[language].properties;
 
   useEffect(() => {
     setImageIndex(0);
@@ -114,13 +119,13 @@ export function PropertyModal({
             exit={{ opacity: 0, y: 12, scale: 0.99 }}
             transition={{ duration: 0.35, ease: ORGANIC_EASE }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-5xl bg-[#FAF9F6] text-[#18241E] rounded-2xl overflow-hidden border border-[#18241E]/12 shadow-2xl my-auto max-h-[92vh] overflow-y-auto"
+            className="relative w-full max-w-5xl bg-[#FAF8F3] text-[#0E2F1E] rounded-2xl overflow-hidden border border-[#0E2F1E]/12 shadow-2xl my-auto max-h-[92vh] overflow-y-auto"
           >
             <button
               type="button"
               onClick={onClose}
-              aria-label="Cerrar detalle de propiedad"
-              className="absolute top-4 right-4 z-20 inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/95 text-[#18241E] hover:bg-white transition-colors shadow-md cursor-pointer"
+              aria-label={copy.closeLabel}
+              className="absolute top-4 right-4 z-20 inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/95 text-[#0E2F1E] hover:bg-white transition-colors shadow-md cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -137,7 +142,7 @@ export function PropertyModal({
                     );
                   }
                 }}
-                className="group/modal-gallery lg:col-span-7 flex flex-col bg-[#18241E]"
+                className="group/modal-gallery lg:col-span-7 flex flex-col bg-[#0E2F1E]"
               >
                 <div className="relative overflow-hidden min-h-[280px] sm:min-h-[380px] lg:flex-1 lg:min-h-[460px]">
                   <MediaImage
@@ -147,7 +152,7 @@ export function PropertyModal({
                     className="w-full h-full object-cover absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/modal-gallery:scale-[1.03]"
                   />
                   <div
-                    className="absolute inset-0 bg-gradient-to-t from-[#0D1611]/70 via-transparent to-transparent pointer-events-none"
+                    className="absolute inset-0 bg-gradient-to-t from-[#091F14]/70 via-transparent to-transparent pointer-events-none"
                     aria-hidden="true"
                   />
 
@@ -173,7 +178,7 @@ export function PropertyModal({
                               (prev - 1 + property.images.length) % property.images.length,
                           )
                         }
-                        aria-label="Fotografía anterior"
+                        aria-label={copy.prevPhoto}
                         className="opacity-0 group-hover/modal-gallery:opacity-100 transition-opacity duration-300 absolute left-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 hover:bg-black/85 flex items-center justify-center cursor-pointer"
                       >
                         <ChevronLeft className="w-4 h-4" />
@@ -187,7 +192,7 @@ export function PropertyModal({
                         onClick={() =>
                           setImageIndex((prev) => (prev + 1) % property.images.length)
                         }
-                        aria-label="Siguiente fotografía"
+                        aria-label={copy.nextPhoto}
                         className="opacity-0 group-hover/modal-gallery:opacity-100 transition-opacity duration-300 absolute right-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 hover:bg-black/85 flex items-center justify-center cursor-pointer"
                       >
                         <ChevronRight className="w-4 h-4" />
@@ -197,17 +202,17 @@ export function PropertyModal({
                 </div>
 
                 {property.images.length > 1 && (
-                  <div className="flex items-center gap-2 p-3 bg-[#101A14] overflow-x-auto">
+                  <div className="flex items-center gap-2 p-3 bg-[#091F14] overflow-x-auto">
                     {property.images.map((imgSrc, idx) => (
                       <button
                         key={`${property.id}-thumb-${idx}`}
                         type="button"
                         onMouseEnter={() => setImageIndex(idx)}
                         onClick={() => setImageIndex(idx)}
-                        aria-label={`Ver fotografía ${idx + 1}`}
+                        aria-label={`${copy.seePhoto} ${idx + 1}`}
                         className={`relative w-16 h-11 rounded-lg overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
                           imageIndex === idx
-                            ? 'border-[#FAF9F6] opacity-100'
+                            ? 'border-[#C8A562] opacity-100'
                             : 'border-transparent opacity-55 hover:opacity-90'
                         }`}
                       >
@@ -224,17 +229,19 @@ export function PropertyModal({
 
               <div className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between gap-5">
                 <div>
-                  <div className="text-xs font-medium text-[#8C6239] mb-1.5 pr-8">
+                  <div className="text-xs font-medium text-[#9A783A] mb-1.5 pr-8">
                     <span>{property.zone}</span>
-                    <span aria-hidden="true" className="mx-2 text-[#18241E]/25">
+                    <span aria-hidden="true" className="mx-2 text-[#0E2F1E]/25">
                       ·
                     </span>
-                    <span className="text-[#18241E]/65">{property.category}</span>
+                    <span className="text-[#2D3332]/70">
+                      {CATEGORY_LABELS[language][property.category]}
+                    </span>
                   </div>
 
                   <h3
                     id="property-modal-title"
-                    className="font-serif text-2xl sm:text-3xl font-normal leading-tight text-[#18241E]"
+                    className="font-serif text-2xl sm:text-3xl font-normal leading-tight text-[#0E2F1E]"
                   >
                     {property.title}
                   </h3>
@@ -246,8 +253,8 @@ export function PropertyModal({
                       </span>
                       <span className="block text-[11px] text-[#18241E]/55 tabular-nums">
                         {currency === 'PEN'
-                          ? `Referencia US$ ${new Intl.NumberFormat('en-US').format(property.priceUsd)}`
-                          : `Ref. S/ ${new Intl.NumberFormat('es-PE').format(Math.round(property.priceUsd * penRate))}`}
+                          ? `${copy.refPrefix} US$ ${new Intl.NumberFormat('en-US').format(property.priceUsd)}`
+                          : `${copy.refShortPrefix} S/ ${new Intl.NumberFormat('es-PE').format(Math.round(property.priceUsd * penRate))}`}
                       </span>
                     </div>
                     <span className="text-xs text-[#18241E]/65 tabular-nums">
@@ -259,13 +266,17 @@ export function PropertyModal({
                     {property.isLand ? (
                       <>
                         <div>
-                          <span className="block text-xs text-[#18241E]/55">Extensión</span>
+                          <span className="block text-xs text-[#18241E]/55">
+                            {copy.extensionLabel}
+                          </span>
                           <span className="font-semibold tabular-nums">
                             {property.hectares?.toFixed(1)} Ha
                           </span>
                         </div>
                         <div className="col-span-2">
-                          <span className="block text-xs text-[#18241E]/55">Perfil</span>
+                          <span className="block text-xs text-[#18241E]/55">
+                            {copy.profileLabel}
+                          </span>
                           <span className="font-medium text-[#18241E]">
                             {property.productivityOrArchitecture}
                           </span>
@@ -274,21 +285,27 @@ export function PropertyModal({
                     ) : (
                       <>
                         <div>
-                          <span className="block text-xs text-[#18241E]/55">Área techada</span>
+                          <span className="block text-xs text-[#18241E]/55">
+                            {copy.builtAreaLabel}
+                          </span>
                           <span className="font-semibold tabular-nums">
                             {property.areaSqm} m²
                           </span>
                         </div>
                         <div>
-                          <span className="block text-xs text-[#18241E]/55">Habitaciones</span>
+                          <span className="block text-xs text-[#18241E]/55">
+                            {copy.bedroomsLabel}
+                          </span>
                           <span className="font-semibold tabular-nums">
-                            {property.bedrooms} Hab.
+                            {property.bedrooms} {propCopy.roomsShort}
                           </span>
                         </div>
                         <div>
-                          <span className="block text-xs text-[#18241E]/55">Baños</span>
+                          <span className="block text-xs text-[#18241E]/55">
+                            {copy.bathroomsLabel}
+                          </span>
                           <span className="font-semibold tabular-nums">
-                            {property.bathrooms} Baños
+                            {property.bathrooms} {propCopy.bathsShort}
                           </span>
                         </div>
                       </>
@@ -312,7 +329,7 @@ export function PropertyModal({
                     <div className="mt-4 rounded-xl bg-[#F1EFEA] p-4 border border-[#18241E]/10 space-y-3 text-xs">
                       <div className="flex items-center justify-between">
                         <span className="font-medium text-[#18241E]">
-                          Cuota inicial ({downPaymentPct}%)
+                          {copy.downPayment} ({downPaymentPct}%)
                         </span>
                         <span className="font-semibold tabular-nums text-[#2A4736]">
                           {formatPropertyPrice(
@@ -329,19 +346,21 @@ export function PropertyModal({
                         step={5}
                         value={downPaymentPct}
                         onChange={(e) => setDownPaymentPct(Number(e.target.value))}
-                        aria-label="Porcentaje de cuota inicial"
+                        aria-label={copy.downPaymentAria}
                         className="w-full accent-[#2A4736] cursor-pointer"
                       />
 
                       <div className="flex items-center justify-between pt-1">
-                        <span className="font-medium text-[#18241E]">Plazo ({years} años)</span>
+                        <span className="font-medium text-[#18241E]">
+                          {copy.termYears} ({years} {copy.yearsLabel})
+                        </span>
                         <span className="font-semibold tabular-nums text-[#18241E]">
                           {formatPropertyPrice(
                             Math.round(calculateMonthlyPaymentUsd(property.priceUsd)),
                             currency,
                             penRate,
                           )}
-                          /mes
+                          {copy.perMonth}
                         </span>
                       </div>
                       <input
@@ -351,21 +370,20 @@ export function PropertyModal({
                         step={5}
                         value={years}
                         onChange={(e) => setYears(Number(e.target.value))}
-                        aria-label="Plazo en años"
+                        aria-label={copy.termAria}
                         className="w-full accent-[#2A4736] cursor-pointer"
                       />
                       <p className="text-[11px] text-[#18241E]/60">
-                        Cálculo referencial TEA 8.5%. Sujeto a evaluación bancaria o financiamiento
-                        directo.
+                        {copy.simNote}
                       </p>
                     </div>
                   )}
                 </div>
 
-                <div className="pt-4 border-t border-[#18241E]/10 space-y-3">
-                  <div className="flex items-center justify-between gap-2 text-xs text-[#18241E]/75">
+                <div className="pt-4 border-t border-[#0E2F1E]/10 space-y-3">
+                  <div className="flex items-center justify-between gap-2 text-xs text-[#2D3332]/80">
                     <span className="inline-flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-[#2A4736] shrink-0" />
+                      <ShieldCheck className="w-4 h-4 text-[#9A783A] shrink-0" />
                       <span>{property.sunarpStatus}</span>
                     </span>
                   </div>
@@ -374,26 +392,26 @@ export function PropertyModal({
                     <button
                       type="button"
                       onClick={() => setShowSimulator((prev) => !prev)}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#18241E]/18 bg-white hover:bg-[#F1EFEA] text-[#18241E] text-xs font-medium px-3 py-2.5 transition-colors cursor-pointer"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#0E2F1E]/18 bg-white hover:bg-[#F3EFE6] text-[#0E2F1E] text-xs font-medium px-3 py-2.5 transition-colors cursor-pointer"
                     >
                       <Calculator className="w-3.5 h-3.5" />
-                      <span>{showSimulator ? 'Ocultar cuota' : 'Simular cuota'}</span>
+                      <span>{showSimulator ? copy.hideSimulator : copy.showSimulator}</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={handleCopySummary}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#18241E]/18 bg-white hover:bg-[#F1EFEA] text-[#18241E] text-xs font-medium px-3 py-2.5 transition-colors cursor-pointer"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#0E2F1E]/18 bg-white hover:bg-[#F3EFE6] text-[#0E2F1E] text-xs font-medium px-3 py-2.5 transition-colors cursor-pointer"
                     >
                       {copied ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-[#2A4736]" />
-                          <span className="text-[#2A4736]">Copiado</span>
+                          <Check className="w-3.5 h-3.5 text-[#1B4730]" />
+                          <span className="text-[#1B4730]">{copy.copied}</span>
                         </>
                       ) : (
                         <>
                           <Copy className="w-3.5 h-3.5" />
-                          <span>Copiar resumen</span>
+                          <span>{copy.copySummary}</span>
                         </>
                       )}
                     </button>
@@ -402,10 +420,10 @@ export function PropertyModal({
                   <button
                     type="button"
                     onClick={() => onInquire(property)}
-                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#18241E] hover:bg-[#2A4736] text-[#FAF9F6] text-sm font-medium px-6 py-3.5 transition-colors cursor-pointer"
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#0E2F1E] hover:bg-[#1B4730] text-[#FAF8F3] text-sm font-medium px-6 py-3.5 transition-colors cursor-pointer"
                   >
-                    <span>Solicitar dossier y planos</span>
-                    <ArrowUpRight className="w-4 h-4" />
+                    <span>{copy.requestDossierAndPlans}</span>
+                    <ArrowUpRight className="w-4 h-4 text-[#E3C992]" />
                   </button>
                 </div>
               </div>

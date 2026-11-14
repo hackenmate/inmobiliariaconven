@@ -1,6 +1,6 @@
 {
   "name": "Selva Alta Realty",
   "description": "Asesoría inmobiliaria especializada en Huayopata, Quillabamba y La Convención, Cusco. Fincas productivas, residencias y terrenos con saneamiento en SUNARP.",
-  "requestFramePermissions": [],
+  "requestFramePermissions": ["microphone"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
